@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.TreeSet;
 
 public class CalendarView extends View {
 
@@ -30,6 +31,8 @@ public class CalendarView extends View {
     private int disabledDayTextColor = 0xFFAAAAAA;
 
     private float textSize = 14; // sp
+    private boolean disableAllDates = false;
+    private TreeSet<Long> enabledDates = new TreeSet<>();
     private OnDateSelectListener onDateSelectListener = null;
 
     private Calendar todaysCalendar;
@@ -132,7 +135,7 @@ public class CalendarView extends View {
     }
 
     private void updateHeaderBitmap() {
-        if (this.width == 0 || this.headerHeight == 0) return;
+        if (this.width <= 0 || this.headerHeight <= 0) return;
         this.headerBitmap = Bitmap.createBitmap(this.width, this.headerHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(this.headerBitmap);
 
@@ -165,7 +168,7 @@ public class CalendarView extends View {
     }
 
     private void updateBodyBitmap() {
-        if (this.width == 0 || this.bodyHeight == 0) return;
+        if (this.width <= 0 || this.bodyHeight <= 0) return;
         this.bodyBitmap = Bitmap.createBitmap(this.width, this.bodyHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(this.bodyBitmap);
 
@@ -176,7 +179,6 @@ public class CalendarView extends View {
         int y = this.verticalMargin;
 
         // Render days
-        this.paint.setColor(this.dayTextColor);
         for (int day = 1; day < amountOfDaysInMonth; day++) {
             this.renderDay(canvas, x, y, day);
             currentDayOfWeek = (currentDayOfWeek + 1) % 8;
@@ -203,8 +205,12 @@ public class CalendarView extends View {
             this.paint.setColor(this.selectedDayTextColor);
         } else {
             // Set text color
-            if (Utils.isSameDay(dayCalendar, this.todaysCalendar)) this.paint.setColor(this.todayTextColor);
-            else this.paint.setColor(this.dayTextColor);
+            if (Utils.isSameDay(dayCalendar, this.todaysCalendar))
+                this.paint.setColor(this.todayTextColor);
+            else if (this.disableAllDates && !this.enabledDates.contains(Utils.getDayInMillis(dayCalendar)))
+                this.paint.setColor(this.disabledDayTextColor);
+            else
+                this.paint.setColor(this.dayTextColor);
         }
 
         canvas.drawText(String.valueOf(day), x, y, this.paint);
@@ -279,6 +285,12 @@ public class CalendarView extends View {
         this.invalidate();
     }
 
+    public void redraw() {
+        this.updateHeaderBitmap();
+        this.updateBodyBitmap();
+        this.invalidate();
+    }
+
     public void selectDay(Calendar calendar) {
         this.selectedDayCalendar = calendar;
         this.updateBodyBitmap();
@@ -289,6 +301,21 @@ public class CalendarView extends View {
         }
     }
 
+    public void enableDate(Calendar calendar) {
+        this.enabledDates.add(Utils.getDayInMillis(calendar));
+    }
+
+    public void setOnDateSelectListener(OnDateSelectListener onDateSelectListener) {
+        this.onDateSelectListener = onDateSelectListener;
+    }
+
+    public void setDisableAllDates(boolean disableAllDates) {
+        if (disableAllDates) this.enabledDates = new TreeSet<>();
+        this.disableAllDates = disableAllDates;
+        this.updateBodyBitmap();
+        this.invalidate();
+    }
+
     public void setTextSize(float textSize) {
         this.textSize = textSize;
         this.paint.setTextSize(Utils.spToPx(this.context, this.textSize));
@@ -296,10 +323,6 @@ public class CalendarView extends View {
         this.updateHeaderBitmap();
         this.updateBodyBitmap();
         this.invalidate();
-    }
-
-    public void setOnDateSelectListener(OnDateSelectListener onDateSelectListener) {
-        this.onDateSelectListener = onDateSelectListener;
     }
 
     public void setTitleTextColor(int titleTextColor) {
@@ -337,6 +360,38 @@ public class CalendarView extends View {
         this.disabledDayTextColor = disabledDayTextColor;
         this.updateBodyBitmap();
         this.invalidate();
+    }
+
+    public int getTitleTextColor() {
+        return this.titleTextColor;
+    }
+
+    public int getDayTextColor() {
+        return this.dayTextColor;
+    }
+
+    public int getTodayTextColor() {
+        return this.todayTextColor;
+    }
+
+    public int getSelectedDayTextColor() {
+        return this.selectedDayTextColor;
+    }
+
+    public int getSelectedDayBackgroundColor() {
+        return this.selectedDayBackgroundColor;
+    }
+
+    public int getDisabledDayTextColor() {
+        return this.disabledDayTextColor;
+    }
+
+    public float getTextSize() {
+        return this.textSize;
+    }
+
+    public boolean isDisableAllDates() {
+        return this.disableAllDates;
     }
 
     public interface OnDateSelectListener {
@@ -413,6 +468,13 @@ public class CalendarView extends View {
         public static int getFirstDayOfMonth(Calendar calendar) {
             Calendar firstDayCalendar = new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), 1);
             return firstDayCalendar.get(Calendar.DAY_OF_WEEK);
+        }
+
+        public static long getDayInMillis(Calendar calendar) {
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            return new GregorianCalendar(year, month, day).getTimeInMillis();
         }
     }
 }

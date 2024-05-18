@@ -1,11 +1,13 @@
 package com.espaco.cultural.database
 
+import com.espaco.cultural.entities.ArtWork
 import com.espaco.cultural.entities.Horario
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 import java.util.TimeZone
+import java.util.TreeSet
 
 class HorariosDB {
     companion object {
@@ -30,6 +32,18 @@ class HorariosDB {
                     horarios.add(horario);
                 }
 
+                callback(horarios)
+            }
+        }
+
+        fun getAllHorarios(callback: (horarios: ArrayList<Calendar>) -> Unit) {
+            horariosReference.get().addOnSuccessListener {
+                val horarios = ArrayList<Calendar>()
+                it.children.forEach { child ->
+                    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                    calendar.timeInMillis = child.key!!.toLong()
+                    horarios.add(calendar)
+                }
                 callback(horarios)
             }
         }

@@ -1,5 +1,6 @@
 package com.espaco.cultural.activities.fragments
 
+import android.graphics.Color
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import android.os.Build
@@ -70,6 +71,13 @@ class VisitsFragment : Fragment() {
 
         binding.calendarView.setTodayTextColor(ContextCompat.getColor(context, R.color.purple_700))
         binding.calendarView.setSelectedDayBackgroundColor(ContextCompat.getColor(context, R.color.purple_500))
+
+        binding.calendarView.isDisableAllDates = true
+        binding.calendarView.dayTextColor = Color.BLACK
+        HorariosDB.getAllHorarios {dates ->
+            dates.forEach { binding.calendarView.enableDate(it) }
+            binding.calendarView.redraw()
+        }
 
         binding.calendarView.setOnDateSelectListener {calendar ->
             binding.textView4.visibility = View.VISIBLE
