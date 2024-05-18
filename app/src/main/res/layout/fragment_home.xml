@@ -6,12 +6,33 @@
     android:layout_height="match_parent"
     tools:context=".activities.fragments.HomeFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp"
-        tools:listitem="@layout/item_artwork" />
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="horizontal"
+            tools:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/progressBar2"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_artwork" />
+    </LinearLayout>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -37,6 +58,7 @@
         android:src="@drawable/ic_add_24"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/floatingActionButton"
-        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton" />
+        app:layout_constraintEnd_toEndOf="@+id/floatingActionButton"
+        android:importantForAccessibility="no" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
