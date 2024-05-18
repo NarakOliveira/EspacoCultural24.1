@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Espaço Cultural</string>
+    <string name="registration">Matrícula</string>
+    <string name="password">Senha</string>
+    <string name="sign_in">Entrar</string>
+    <string name="login">Login</string>
+    <string name="action_visits">Visitas</string>
+    <string name="action_home">Página inicial</string>
+    <string name="action_settings">Configurações</string>
+    <string name="action_logout">Desconectar</string>
+    <string name="nav_open">Abrir menu</string>
+    <string name="nav_close">Fechar menu</string>
+    <string name="user_picture_description">Foto do usuário</string>
+    <string name="registration_field">Matrícula:</string>
+    <string name="security_category">Segurança</string>
+    <string name="need_password">Exigir senha</string>
+    <string name="notification_caategory">Notificações</string>
+    <string name="new_exposition">Novas exposições</string>
+    <string name="interations">Interações</string>
+</resources>

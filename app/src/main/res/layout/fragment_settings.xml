@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".activities.fragments.SettingsFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/security_category"
+        android:textSize="20sp" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/needPasswordSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/switch_background"
+        android:padding="16dp"
+        android:text="@string/need_password" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/notification_caategory"
+        android:textSize="20sp" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/newExposureSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/switch_background"
+        android:padding="16dp"
+        android:text="@string/new_exposition" />
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/interactionsSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/switch_background"
+        android:padding="16dp"
+        android:text="@string/interations" />
+
+</LinearLayout>
