@@ -17,4 +17,9 @@
     <string name="notification_caategory">Notificações</string>
     <string name="new_exposition">Novas exposições</string>
     <string name="interations">Interações</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title">Titulo</string>
+    <string name="autor">Autor</string>
+    <string name="description">Descrição</string>
 </resources>
