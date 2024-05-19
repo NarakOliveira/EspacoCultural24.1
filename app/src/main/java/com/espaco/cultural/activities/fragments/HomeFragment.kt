@@ -50,9 +50,17 @@ class HomeFragment : Fragment() {
 
         val adapter = ArtWorkAdapter()
         adapter.setOnArtWorkClicked {
+            val ldf = FullArtWorkFragment()
+            val args = Bundle()
+            args.putString("title", it.title)
+            args.putString("autor", it.autor)
+            args.putString("description", it.description)
+            args.putString("image", it.image)
+            ldf.setArguments(args)
+
             parentFragmentManager.beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                .replace(R.id.fragmentContainer, FullArtWorkFragment(it))
+                .replace(R.id.fragmentContainer, ldf)
                 .commit()
         }
 

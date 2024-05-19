@@ -30,5 +30,19 @@ class ArtWorkDB {
             artWorkReference.child(key).child("description").setValue(artWork.description)
             artWorkReference.child(key).child("image").setValue(artWork.image)
         }
+
+        fun findArtWork(id: String, callback: (artWork: ArtWork?) -> Unit) {
+            artWorkReference.child(id).get().addOnSuccessListener { child ->
+                val title = child.child("title").getValue(String::class.java)
+                val autor = child.child("autor").getValue(String::class.java)
+                val description = child.child("description").getValue(String::class.java)
+                val image = child.child("image").getValue(String::class.java)
+                if (title == null || autor == null || description == null || image == null) {
+                    callback(null)
+                } else callback(ArtWork(title, autor, description, image))
+            }.addOnFailureListener {
+                callback(null)
+            }
+        }
     }
 }

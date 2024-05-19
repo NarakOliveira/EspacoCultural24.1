@@ -3,7 +3,11 @@ package com.espaco.cultural.activities
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
+import android.nfc.NdefMessage
+import android.nfc.NfcAdapter
+import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,12 +16,13 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.core.view.children
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
+import com.espaco.cultural.activities.fragments.FullArtWorkFragment
 import com.espaco.cultural.activities.fragments.HomeFragment
 import com.espaco.cultural.activities.fragments.SettingsFragment
 import com.espaco.cultural.activities.fragments.VisitsFragment
+import com.espaco.cultural.database.ArtWorkDB
 import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.database.preferences.SettingsPreferences
 import com.espaco.cultural.database.preferences.UserPreferences
@@ -56,6 +61,32 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             binding.navigationView.setCheckedItem(R.id.nav_home)
         }
 
+        if (intent.action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+            val rawMessages = getNfcMessage()
+            if (rawMessages != null) {
+                val value = String((rawMessages[0] as NdefMessage).records[0].payload)
+                ArtWorkDB.findArtWork(value) {
+                    if (it != null) {
+                        val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+                        if (f is FullArtWorkFragment) return@findArtWork
+                        val ldf = FullArtWorkFragment()
+                        val args = Bundle()
+                        args.putString("title", it.title)
+                        args.putString("autor", it.autor)
+                        args.putString("description", it.description)
+                        args.putString("image", it.image)
+                        ldf.setArguments(args)
+
+                        supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.fragmentContainer, ldf)
+                            .commit()
+                    } else {
+                        Toast.makeText(this, "Obra não encontrada!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -143,5 +174,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .load(userPreferences.picture)
             .error(R.drawable.no_user_picture)
             .into(userImage)
+    }
+
+    private fun getNfcMessage(): Array<out Parcelable>? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES, Parcelable::class.java)
+        } else {
+            return intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+        }
     }
 }

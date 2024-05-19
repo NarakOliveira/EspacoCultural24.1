@@ -11,13 +11,21 @@ import com.espaco.cultural.R
 import com.espaco.cultural.databinding.FragmentFullArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
 
-class FullArtWorkFragment(private val artWork: ArtWork) : Fragment() {
+class FullArtWorkFragment : Fragment() {
     private lateinit var binding: FragmentFullArtWorkBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val args = requireArguments()
+        val artWork = ArtWork(
+            args.getString("title") ?: "None",
+            args.getString("autor") ?: "None",
+            args.getString("description") ?: "None",
+            args.getString("image") ?: "",
+        )
+
         binding = FragmentFullArtWorkBinding.inflate(inflater)
 
         binding.textView.text = artWork.title
