@@ -33,6 +33,8 @@ import com.espaco.cultural.database.preferences.SettingsPreferences
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.ActivityMainBinding
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
@@ -44,12 +46,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        requestNotificationPermissions()
+
 
         setSupportActionBar(binding.materialToolbar)
         binding.navigationView.setNavigationItemSelectedListener(this)
 
         userPreferences = UserPreferences(this)
         settingsPreferences = SettingsPreferences(this)
+        if (settingsPreferences.newExposition) Firebase.messaging.subscribeToTopic("exposition")
+        else Firebase.messaging.unsubscribeFromTopic("exposition")
+
         updateCacheData()
 
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.materialToolbar, R.string.nav_open, R.string.nav_close)

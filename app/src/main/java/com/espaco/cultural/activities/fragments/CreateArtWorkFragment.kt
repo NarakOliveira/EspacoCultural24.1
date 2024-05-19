@@ -1,8 +1,11 @@
 package com.espaco.cultural.activities.fragments
 
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.provider.MediaStore
 import android.util.Base64
 import android.view.LayoutInflater
@@ -18,6 +21,9 @@ import com.espaco.cultural.R
 import com.espaco.cultural.database.ArtWorkDB
 import com.espaco.cultural.databinding.FragmentCreateArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.ktx.messaging
 import java.io.ByteArrayOutputStream
 
 
@@ -89,7 +95,8 @@ class CreateArtWorkFragment : Fragment() {
     }
 
     private fun uploadArtWork(title: String, autor: String, description: String) {
-        val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedUri)
+        if (selectedUri == null) return
+        val bitmap = getCapturedImage(selectedUri!!)
 
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
@@ -103,5 +110,19 @@ class CreateArtWorkFragment : Fragment() {
             .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
             .replace(R.id.fragmentContainer, HomeFragment())
             .commit()
+    }
+    private fun getCapturedImage(selectedPhotoUri: Uri): Bitmap {
+        val contentResolver = requireActivity().contentResolver
+        val bitmap = when {
+            Build.VERSION.SDK_INT < 28 -> MediaStore.Images.Media.getBitmap(
+                contentResolver,
+                selectedPhotoUri
+            )
+            else -> {
+                val source = ImageDecoder.createSource(contentResolver, selectedPhotoUri)
+                ImageDecoder.decodeBitmap(source)
+            }
+        }
+        return bitmap
     }
 }
