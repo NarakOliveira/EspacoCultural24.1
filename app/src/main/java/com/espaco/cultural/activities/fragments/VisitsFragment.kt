@@ -63,7 +63,10 @@ class VisitsFragment : Fragment() {
                 .setMessage("Deseja confirmar sua presença na visita das ${horario}?")
                 .setPositiveButton("Confirmar") { _, _ ->
                     adapter.addPeople(it, userPreferences.registration)
-                    Toast.makeText(context, "Presença confirmada com sucesso na visita das $horario", Toast.LENGTH_SHORT).show()
+                    HorariosDB.confirmUser(it, userPreferences.registration) { status ->
+                        if (status) Toast.makeText(context, "Presença confirmada com sucesso na visita das $horario", Toast.LENGTH_SHORT).show()
+                        else Toast.makeText(context, "Erro ao tenta confirmar a presença", Toast.LENGTH_SHORT).show()
+                    }
                 }
                 .setNegativeButton("Cancelar", null)
                 .show()
