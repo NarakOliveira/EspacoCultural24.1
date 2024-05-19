@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.Packaging
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -38,6 +40,11 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
+    packaging {
+        resources.excludes += "META-INF/LICENSE*"
+        resources.excludes += "META-INF/NOTICE.txt"
+    }
 }
 
 @Suppress("UseTomlInstead")
@@ -57,8 +64,11 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(platform(libs.firebase.bom))
+
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-database")
+    implementation("com.google.firebase:firebase-messaging")
+
 
     implementation("com.github.bumptech.glide:glide:4.16.0")
 }
