@@ -23,7 +23,7 @@ import kotlin.math.sign
 
 class HorarioAdapter : RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
     private var horarios:  ArrayList<Horario> = ArrayList()
-    private lateinit var onHorarioClicked: (horario: Horario) -> Unit;
+    private lateinit var onHorarioClicked: (horario: Horario) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HorarioHolder {
         return HorarioHolder(LayoutInflater.from(parent.context).inflate(R.layout.horarios, parent, false))

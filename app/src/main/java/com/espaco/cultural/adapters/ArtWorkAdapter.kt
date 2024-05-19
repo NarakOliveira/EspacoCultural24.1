@@ -16,12 +16,21 @@ import com.espaco.cultural.entities.Horario
 
 class ArtWorkAdapter: RecyclerView.Adapter<ArtWorkAdapter.ArtWorkHolder>() {
     private var artWorks: ArrayList<ArtWork> = ArrayList()
+    private lateinit var onArtWorkClicked: (artWork: ArtWork) -> Unit
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArtWorkHolder {
         return ArtWorkHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_artwork, parent, false))
     }
 
     override fun onBindViewHolder(holder: ArtWorkHolder, position: Int) {
-        holder.bind(artWorks[position])
+        val artWork = artWorks[position]
+        holder.bind(artWork)
+
+        holder.itemView.setOnClickListener {
+            val adapterPosition = holder.adapterPosition
+            if (adapterPosition != RecyclerView.NO_POSITION && this::onArtWorkClicked.isInitialized) {
+                this.onArtWorkClicked(artWork)
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -32,6 +41,10 @@ class ArtWorkAdapter: RecyclerView.Adapter<ArtWorkAdapter.ArtWorkHolder>() {
     fun updateData(artWorks: ArrayList<ArtWork>) {
         this.artWorks = artWorks
         notifyDataSetChanged()
+    }
+
+    fun setOnArtWorkClicked(onArtWorkClicked: (artWork: ArtWork) -> Unit) {
+        this.onArtWorkClicked = onArtWorkClicked
     }
 
     class ArtWorkHolder(itemView: View) : ViewHolder(itemView) {

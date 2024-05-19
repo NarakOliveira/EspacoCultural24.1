@@ -49,6 +49,13 @@ class HomeFragment : Fragment() {
         }
 
         val adapter = ArtWorkAdapter()
+        adapter.setOnArtWorkClicked {
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragmentContainer, FullArtWorkFragment(it))
+                .commit()
+        }
+
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
