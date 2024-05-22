@@ -12,8 +12,11 @@ import com.espaco.cultural.R
 import com.espaco.cultural.adapters.CommentsAdapter
 import com.espaco.cultural.database.CommentsDB
 import com.espaco.cultural.database.UserDB
+import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentFullArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
+import com.espaco.cultural.entities.Comment
+import com.espaco.cultural.entities.User
 
 class FullArtWorkFragment : Fragment() {
     private lateinit var binding: FragmentFullArtWorkBinding
@@ -45,9 +48,11 @@ class FullArtWorkFragment : Fragment() {
             .into(binding.imageView)
 
         val context = requireContext()
+        val userPreferences = UserPreferences(context)
+
         val adapter = CommentsAdapter()
         binding.recyclerView.adapter = adapter
-        binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
 
         CommentsDB.getComments(artWork) {comments ->
             val registrations: LinkedHashSet<String> = LinkedHashSet()
@@ -56,6 +61,18 @@ class FullArtWorkFragment : Fragment() {
             UserDB.findUsers(registrations) { users ->
                 adapter.updateData(users, comments)
             }
+        }
+
+        binding.floatingActionButton3.setOnClickListener {
+            val content = binding.commentEditText.text.toString()
+            if (content.isEmpty() || content.isBlank())  {
+                binding.commentInputLayout.requestFocus()
+                return@setOnClickListener
+            }
+            binding.commentEditText.setText("")
+
+            val user = User(userPreferences.registration, userPreferences.name, userPreferences.picture, userPreferences.isAdmin)
+            adapter.addComment(user, Comment(user.registration, content, ArrayList()))
         }
 
         return binding.root

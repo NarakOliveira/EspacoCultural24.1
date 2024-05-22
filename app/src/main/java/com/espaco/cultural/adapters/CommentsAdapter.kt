@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.espaco.cultural.R
 import com.espaco.cultural.entities.Comment
 import com.espaco.cultural.entities.User
-import java.util.TreeSet
 
 class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
     private var comments: ArrayList<Comment> = ArrayList()
@@ -46,8 +45,9 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
         notifyDataSetChanged()
     }
 
-    fun addComment(comment: Comment) {
+    fun addComment(user: User, comment: Comment) {
         comments.add(comment)
+        users[comment.author] = user
         notifyItemInserted(comments.size - 1)
     }
 
