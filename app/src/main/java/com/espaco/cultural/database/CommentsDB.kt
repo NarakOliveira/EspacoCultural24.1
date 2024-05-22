@@ -9,8 +9,7 @@ class CommentsDB {
     companion object {
         fun getComments(artWork: ArtWork, callback: (comments: ArrayList<Comment>) -> Unit) {
             Firebase.database.reference
-                .child("obras").child(artWork.id).child("comments")
-                .get().addOnSuccessListener {
+                .child("obras").child(artWork.id).child("comments").get().addOnSuccessListener {
                     val comments = ArrayList<Comment>()
                     it.children.forEach { comment ->
                         val authorRegistration = comment.child("author").getValue(String::class.java) ?: "None"
@@ -25,6 +24,16 @@ class CommentsDB {
                     }
                     callback(comments)
                 }
+        }
+
+        fun publishComment(artWork: ArtWork, comment: Comment) {
+            val ref = Firebase.database.reference
+                .child("obras").child(artWork.id).child("comments")
+
+            val key: String = ref.push().key ?: ""
+            ref.child(key).child("author").setValue(comment.author)
+            ref.child(key).child("content").setValue(comment.content)
+            ref.child(key).child("userLiked").setValue(comment.usersLiked)
         }
     }
 }

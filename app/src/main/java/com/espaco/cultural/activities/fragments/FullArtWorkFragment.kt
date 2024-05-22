@@ -17,6 +17,8 @@ import com.espaco.cultural.databinding.FragmentFullArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
 import com.espaco.cultural.entities.Comment
 import com.espaco.cultural.entities.User
+import java.util.Collections
+
 
 class FullArtWorkFragment : Fragment() {
     private lateinit var binding: FragmentFullArtWorkBinding
@@ -59,6 +61,7 @@ class FullArtWorkFragment : Fragment() {
             comments.forEach {  registrations.add(it.author) }
 
             UserDB.findUsers(registrations) { users ->
+                comments.sortWith(compareBy { it.usersLiked.size })
                 adapter.updateData(users, comments)
             }
         }
@@ -72,7 +75,10 @@ class FullArtWorkFragment : Fragment() {
             binding.commentEditText.setText("")
 
             val user = User(userPreferences.registration, userPreferences.name, userPreferences.picture, userPreferences.isAdmin)
-            adapter.addComment(user, Comment(user.registration, content, ArrayList()))
+            val comment = Comment(user.registration, content, ArrayList())
+
+            adapter.addComment(user, comment)
+            CommentsDB.publishComment(artWork, comment)
         }
 
         return binding.root
