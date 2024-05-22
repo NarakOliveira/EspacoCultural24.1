@@ -1,5 +1,5 @@
 ### Lista do que falta
-- [ ] Adicionar tela de comentarios pra cada obra
+- [x] Adicionar tela de comentarios pra cada obra
 - [x] Adicionar uma tela pra mostrar so uma obra (pra quando a pessoa passar o celular no rfid ir pra essa tela com a obra)
 - [x] Adicionar a integração com o rfid
 - [ ] Adicionar tela propria pra escanear rfid
