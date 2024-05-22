@@ -17,7 +17,7 @@ class ArtWorkDB {
                     val autor = child.child("autor").getValue(String::class.java) ?: "None"
                     val description = child.child("description").getValue(String::class.java) ?: "None"
                     val image = child.child("image").getValue(String::class.java) ?: ""
-                    artWorks.add(ArtWork(title, autor, description, image))
+                    artWorks.add(ArtWork(child.key ?: "None", title, autor, description, image))
                 }
                 callback(artWorks)
             }
@@ -39,7 +39,7 @@ class ArtWorkDB {
                 val image = child.child("image").getValue(String::class.java)
                 if (title == null || autor == null || description == null || image == null) {
                     callback(null)
-                } else callback(ArtWork(title, autor, description, image))
+                } else callback(ArtWork(id, title, autor, description, image))
             }.addOnFailureListener {
                 callback(null)
             }

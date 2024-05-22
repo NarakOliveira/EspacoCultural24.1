@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
+import com.espaco.cultural.adapters.CommentsAdapter
 import com.espaco.cultural.databinding.FragmentFullArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
 
@@ -20,6 +22,7 @@ class FullArtWorkFragment : Fragment() {
     ): View {
         val args = requireArguments()
         val artWork = ArtWork(
+            args.getString("id") ?: "None",
             args.getString("title") ?: "None",
             args.getString("autor") ?: "None",
             args.getString("description") ?: "None",
@@ -38,6 +41,11 @@ class FullArtWorkFragment : Fragment() {
             .load(imageByteArray)
             .placeholder(R.drawable.ic_downloading)
             .into(binding.imageView)
+
+        val context = requireContext()
+        val adapter = CommentsAdapter()
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
         return binding.root
     }
