@@ -17,7 +17,7 @@ class ArtWorkDB {
                     val autor = child.child("autor").getValue(String::class.java) ?: "None"
                     val description = child.child("description").getValue(String::class.java) ?: "None"
                     val image = child.child("image").getValue(String::class.java) ?: ""
-                    artWorks.add(ArtWork(child.key ?: "None", title, autor, description, image))
+                    artWorks.add(ArtWork(child.key.toString(), title, autor, description, image))
                 }
                 callback(artWorks)
             }

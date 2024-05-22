@@ -10,9 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
 import com.espaco.cultural.entities.Comment
+import com.espaco.cultural.entities.User
+import java.util.TreeSet
 
 class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
     private var comments: ArrayList<Comment> = ArrayList()
+    private var users: HashMap<String, User> = HashMap()
     private lateinit var onLikeClicked: (comment: Comment) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsHolder {
@@ -21,7 +24,8 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
 
     override fun onBindViewHolder(holder: CommentsHolder, position: Int) {
         val comment = comments[position]
-        holder.bind(comment)
+        val author = users[comment.author]
+        holder.bind(author, comment)
 
         holder.buttonLike.setOnClickListener {
             val adapterPosition = holder.adapterPosition
@@ -36,8 +40,9 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(comments: ArrayList<Comment>) {
+    fun updateData(users: HashMap<String, User>, comments: ArrayList<Comment>) {
         this.comments = comments;
+        this.users = users;
         notifyDataSetChanged()
     }
 
@@ -57,13 +62,13 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
         private val imageUser: ImageView = itemView.findViewById(R.id.imageUser)
         val buttonLike: ImageView = itemView.findViewById(R.id.buttonLike)
 
-        fun bind(comment: Comment) {
-            textName.text = comment.author.name
+        fun bind(user: User?, comment: Comment) {
+            textName.text = user?.name ?: "None"
             textContent.text = comment.content
             textLike.text = comment.usersLiked.size.toString()
 
             Glide.with(imageUser)
-                .load(comment.author.picture)
+                .load(user?.picture ?: "None")
                 .placeholder(R.drawable.no_user_picture)
                 .error(R.drawable.no_user_picture)
                 .into(imageUser)

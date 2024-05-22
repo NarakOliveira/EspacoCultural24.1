@@ -7,6 +7,7 @@ import com.espaco.cultural.entities.User
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 class UserDB {
     companion object {
@@ -41,6 +42,19 @@ class UserDB {
                 val userPicture = it.child("picture").getValue(String::class.java) as String
                 val userIsAdmin = it.child("isAdmin").getValue(Boolean::class.java) as Boolean
                 callback(User(registration, userName, userPicture, userIsAdmin))
+            }
+        }
+        fun findUsers(registrations: LinkedHashSet<String>, callback: (users: HashMap<String, User>) -> Unit) {
+            usersReference.get().addOnSuccessListener {
+                val users: HashMap<String, User> = HashMap()
+                registrations.forEach { registration ->
+                    val user = it.child(registration)
+                    val userName = user.child("name").getValue(String::class.java) as String
+                    val userPicture = user.child("picture").getValue(String::class.java) as String
+                    val userIsAdmin = user.child("isAdmin").getValue(Boolean::class.java) as Boolean
+                    users[registration] = User(registration, userName, userPicture, userIsAdmin)
+                }
+                callback(users)
             }
         }
     }

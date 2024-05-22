@@ -2,14 +2,16 @@ package com.espaco.cultural.activities.fragments
 
 import android.os.Bundle
 import android.util.Base64
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
 import com.espaco.cultural.adapters.CommentsAdapter
+import com.espaco.cultural.database.CommentsDB
+import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.databinding.FragmentFullArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
 
@@ -46,6 +48,15 @@ class FullArtWorkFragment : Fragment() {
         val adapter = CommentsAdapter()
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+
+        CommentsDB.getComments(artWork) {comments ->
+            val registrations: LinkedHashSet<String> = LinkedHashSet()
+            comments.forEach {  registrations.add(it.author) }
+
+            UserDB.findUsers(registrations) { users ->
+                adapter.updateData(users, comments)
+            }
+        }
 
         return binding.root
     }

@@ -103,7 +103,7 @@ class CreateArtWorkFragment : Fragment() {
         val byteArray = byteArrayOutputStream.toByteArray()
 
         val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        ArtWorkDB.publishArtWork(ArtWork(title, autor, description, encoded))
+        ArtWorkDB.publishArtWork(ArtWork("", title, autor, description, encoded))
 
         Toast.makeText(requireContext(), "Obra adicionada", Toast.LENGTH_SHORT).show()
         parentFragmentManager.beginTransaction()

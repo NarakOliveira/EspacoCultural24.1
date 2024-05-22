@@ -52,6 +52,7 @@ class HomeFragment : Fragment() {
         adapter.setOnArtWorkClicked {
             val ldf = FullArtWorkFragment()
             val args = Bundle()
+            args.putString("id", it.id)
             args.putString("title", it.title)
             args.putString("autor", it.autor)
             args.putString("description", it.description)
