@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
+import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.entities.Comment
 import com.espaco.cultural.entities.User
 
-class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
+class CommentsAdapter(val userRegistration: String): RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
     private var comments: ArrayList<Comment> = ArrayList()
     private var users: HashMap<String, User> = HashMap()
+
     private lateinit var onLikeClicked: (comment: Comment) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentsHolder {
@@ -25,6 +27,12 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
         val comment = comments[position]
         val author = users[comment.author]
         holder.bind(author, comment)
+
+        if (comment.usersLiked.contains(userRegistration)) {
+            holder.buttonLike.setImageResource(R.drawable.ic_upvote_on)
+        } else {
+            holder.buttonLike.setImageResource(R.drawable.ic_upvote_off)
+        }
 
         holder.buttonLike.setOnClickListener {
             val adapterPosition = holder.adapterPosition
@@ -49,6 +57,12 @@ class CommentsAdapter : RecyclerView.Adapter<CommentsAdapter.CommentsHolder>() {
         comments.add(comment)
         users[comment.author] = user
         notifyItemInserted(comments.size - 1)
+    }
+
+  fun updateComment(oldComment: Comment, newComment: Comment) {
+      val index = comments.indexOf(oldComment)
+      comments[index] = newComment
+      notifyItemChanged(index)
     }
 
     fun setOnLikeClicked(onLikeClicked: (comment: Comment) -> Unit) {

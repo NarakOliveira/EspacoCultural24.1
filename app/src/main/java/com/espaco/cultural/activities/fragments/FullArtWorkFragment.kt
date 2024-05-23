@@ -52,9 +52,17 @@ class FullArtWorkFragment : Fragment() {
         val context = requireContext()
         val userPreferences = UserPreferences(context)
 
-        val adapter = CommentsAdapter()
+        val adapter = CommentsAdapter(userPreferences.registration)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
+
+        adapter.setOnLikeClicked {
+            val newComment = it
+            val userIndex = newComment.usersLiked.indexOf(userPreferences.registration)
+            if (userIndex != -1) newComment.usersLiked.removeAt(userIndex)
+            else newComment.usersLiked.add(userPreferences.registration)
+            adapter.updateComment(it, newComment)
+        }
 
         CommentsDB.getComments(artWork) {comments ->
             val registrations: LinkedHashSet<String> = LinkedHashSet()
