@@ -3,7 +3,7 @@
 - [x] Adicionar uma tela pra mostrar so uma obra (pra quando a pessoa passar o celular no rfid ir pra essa tela com a obra)
 - [x] Adicionar a integração com o rfid
 - [ ] Adicionar tela propria pra escanear rfid
-- [ ] Adicionar uma local para pesquisar por uma obra
+- [x] Adicionar uma local para pesquisar por uma obra
 - [ ] Adicionar tela de criar horario (so pra adm)
 - [ ] Adicionar uma tela pra mostrar quem se inscreveu em cada horario (so pra adm)
 - [ ] Adicionar as notificações (fazer logo pq vai dar trabalho)
@@ -18,7 +18,7 @@
 - [x] O sistema deve exibir uma lista de obras mais relevantes na tela incial
 - [x] O sistema deve exibir as exposições em ordem de mais recente quando o usuário scrollar a tela inicial
 - [x] O sistema deve ter um botão para o usuário abrir uma aba de comentario para uma obra
-- [ ] A tela inicial deve ter uma SearchView para pesquisar por uma determinada obra
+- [x] A tela inicial deve ter uma SearchView para pesquisar por uma determinada obra
 - [x] A tela inicial deve ter um FAB para o usuário ir para tela de visitas  rapidamente
 - [x] O sistema deve possuir um ViewDrawer com as seguintes opções: 'Pagina inicial', 'Visitas', 'Configurações', 'Sair' e um botão para voltar para tela anterior
 - [x] O card da obra deve exibir nome, autor, imagem e uma descrição

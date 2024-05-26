@@ -182,7 +182,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun closeSearchView() {
+    private fun closeSearchView() {
         binding.searchView.isIconified = true
         binding.title.visibility = View.VISIBLE
         binding.searchView.setQuery("", false)

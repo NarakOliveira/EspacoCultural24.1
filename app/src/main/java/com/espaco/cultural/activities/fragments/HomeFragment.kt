@@ -15,10 +15,15 @@ import com.espaco.cultural.adapters.ArtWorkAdapter
 import com.espaco.cultural.database.ArtWorkDB
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentHomeBinding
+import com.espaco.cultural.entities.ArtWork
 import com.google.android.material.navigation.NavigationView
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+
+    private lateinit var artWorkList: ArrayList<ArtWork>
+    private lateinit var artWorkAdapter: ArtWorkAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +45,7 @@ class HomeFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) filterList(newText.lowercase())
                 return false
             }
         })
@@ -64,8 +70,8 @@ class HomeFragment : Fragment() {
                 .commit()
         }
 
-        val adapter = ArtWorkAdapter()
-        adapter.setOnArtWorkClicked {
+        artWorkAdapter = ArtWorkAdapter()
+        artWorkAdapter.setOnArtWorkClicked {
             val ldf = FullArtWorkFragment()
             val args = Bundle()
             args.putString("id", it.id)
@@ -81,14 +87,29 @@ class HomeFragment : Fragment() {
                 .commit()
         }
 
-        binding.recyclerView.adapter = adapter
+        binding.recyclerView.adapter = artWorkAdapter
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
 
         ArtWorkDB.getArtWorks {
-            adapter.updateData(it)
+            artWorkList = it
+            artWorkAdapter.updateData(it)
             binding.progress.visibility = View.GONE
         }
 
         return binding.root;
     }
-}
+    private fun filterList(text: String) {
+        if (text.isEmpty()) {
+            artWorkAdapter.updateData(artWorkList)
+            return
+        }
+
+        val filteredList = ArrayList<ArtWork>()
+        for (artWork in artWorkList) {
+            if (artWork.title.lowercase().contains(text)) filteredList.add(artWork)
+            else if (artWork.description.lowercase().contains(text)) filteredList.add(artWork)
+            else if (artWork.autor.lowercase().contains(text)) filteredList.add(artWork)
+        }
+
+        artWorkAdapter.updateData(filteredList)
+    }}
