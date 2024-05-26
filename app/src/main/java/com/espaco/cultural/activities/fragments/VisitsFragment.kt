@@ -45,6 +45,14 @@ class VisitsFragment : Fragment() {
 
 
         adapter.setOnHorarioClicked {
+            if (userPreferences.isAdmin) {
+                parentFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(R.id.fragmentContainer, VisitorsListFragment())
+                    .commit()
+                return@setOnHorarioClicked
+            }
+
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar.timeInMillis = it.timestamp
             val horario  = "${calendar.get(java.util.Calendar.HOUR_OF_DAY)}:${calendar.get(java.util.Calendar.MINUTE)}"

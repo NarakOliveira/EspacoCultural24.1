@@ -27,6 +27,7 @@ import com.espaco.cultural.R
 import com.espaco.cultural.activities.fragments.FullArtWorkFragment
 import com.espaco.cultural.activities.fragments.HomeFragment
 import com.espaco.cultural.activities.fragments.SettingsFragment
+import com.espaco.cultural.activities.fragments.VisitorsListFragment
 import com.espaco.cultural.activities.fragments.VisitsFragment
 import com.espaco.cultural.database.ArtWorkDB
 import com.espaco.cultural.database.UserDB
@@ -172,7 +173,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } else {
                     finishAffinity()
                 }
-            } else {
+            } else if (f is VisitorsListFragment) {
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                    .replace(R.id.fragmentContainer, VisitsFragment())
+                    .commit()
+            } else  {
                 binding.navigationView.setCheckedItem(R.id.nav_home)
                 supportFragmentManager.beginTransaction()
                     .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
