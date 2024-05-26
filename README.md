@@ -10,7 +10,7 @@
 - [ ] Adicionar pras pessoas poderem responder comentarios (se não der tempo faz so um sistema de curtida)
 - [ ] Adicionar um modo anonimo (so caso sobre muito tempo pra fazer isso)
 
-]
+
 ### Requisitos funcionais
 - [x] O sistema deve ter campos para o usuário informar matricula e senha na tela de login
 - [x] O sistema deve ter um botão para o usuário realizar o login na tela de login
