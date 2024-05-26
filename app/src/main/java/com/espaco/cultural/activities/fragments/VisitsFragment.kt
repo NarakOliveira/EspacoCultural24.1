@@ -46,9 +46,17 @@ class VisitsFragment : Fragment() {
 
         adapter.setOnHorarioClicked {
             if (userPreferences.isAdmin) {
+                val ldf = VisitorsListFragment()
+                val args = Bundle()
+                ldf.setArguments(args)
+                args.putString("matricula", it.matricula)
+                args.putLong("timestamp", it.timestamp)
+                args.putInt("capacity", it.capacity)
+                args.putStringArrayList("confirmedPeople", it.confirmedPeople)
+
                 parentFragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                    .replace(R.id.fragmentContainer, VisitorsListFragment())
+                    .replace(R.id.fragmentContainer, ldf)
                     .commit()
                 return@setOnHorarioClicked
             }

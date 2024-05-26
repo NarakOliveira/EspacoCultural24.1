@@ -1,5 +1,6 @@
 package com.espaco.cultural.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
+import com.espaco.cultural.entities.Comment
 import com.espaco.cultural.entities.User
 
 class VisitorsAdapter : RecyclerView.Adapter<VisitorsAdapter.VisitorsHolder>() {
@@ -24,6 +26,12 @@ class VisitorsAdapter : RecyclerView.Adapter<VisitorsAdapter.VisitorsHolder>() {
 
     override fun getItemCount(): Int {
         return visitors.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateData(visitors: ArrayList<User>) {
+        this.visitors = visitors
+        notifyDataSetChanged()
     }
 
     class VisitorsHolder(itemView: View) : ViewHolder(itemView) {

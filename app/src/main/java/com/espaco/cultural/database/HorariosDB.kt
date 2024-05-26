@@ -1,6 +1,7 @@
 package com.espaco.cultural.database
 
 import com.espaco.cultural.entities.Horario
+import com.espaco.cultural.entities.User
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -68,6 +69,17 @@ class HorariosDB {
 
                 callback(true)
             }.addOnFailureListener { callback(false) }
+        }
+
+        fun getVisitors(horario: Horario, callback: (visitors: LinkedHashSet<String>) -> Unit) {
+            horariosReference.child(horario.timestamp.toString()).child("visitors").get().addOnSuccessListener {
+                val visitors: LinkedHashSet<String> = LinkedHashSet()
+                it.children.forEach { child->
+                    val registration = child.getValue(String::class.java) ?: "None"
+                    visitors.add(registration)
+                }
+                callback(visitors)
+            }
         }
     }
 }
