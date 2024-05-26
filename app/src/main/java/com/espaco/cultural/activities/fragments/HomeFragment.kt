@@ -1,14 +1,16 @@
 package com.espaco.cultural.activities.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.espaco.cultural.R
+import com.espaco.cultural.activities.MainActivity
 import com.espaco.cultural.adapters.ArtWorkAdapter
 import com.espaco.cultural.database.ArtWorkDB
 import com.espaco.cultural.database.preferences.UserPreferences
@@ -17,18 +19,31 @@ import com.google.android.material.navigation.NavigationView
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
-        actionBar?.apply { title = "Espaço Cultural" }
+        binding = FragmentHomeBinding.inflate(layoutInflater)
 
         val context = requireContext()
         val userPreferences = UserPreferences(context)
 
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        val activity = requireActivity() as AppCompatActivity
+        val actionBar = activity.supportActionBar
+        actionBar?.apply {
+            title = "Espaço Cultural"
+        }
+        val searchView = (activity as MainActivity).binding.searchView
+        searchView.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+        })
+
         val navigationView = requireActivity().findViewById<NavigationView>(R.id.navigationView)
 
         if (userPreferences.isAdmin) {

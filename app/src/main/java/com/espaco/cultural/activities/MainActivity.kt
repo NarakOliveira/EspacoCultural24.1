@@ -10,7 +10,9 @@ import android.nfc.NfcAdapter
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -36,7 +38,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private lateinit var binding: ActivityMainBinding
+    lateinit var binding: ActivityMainBinding
     private lateinit var userPreferences: UserPreferences
     private lateinit var settingsPreferences: SettingsPreferences
     private var lastClickTime: Long = 0
@@ -58,7 +60,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         updateCacheData()
 
+        binding.searchView.setOnSearchClickListener {
+            binding.title.visibility = View.GONE
+        }
+
+        binding.searchView.setOnCloseListener {
+            binding.title.visibility = View.VISIBLE
+            return@setOnCloseListener false
+        }
+
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.materialToolbar, R.string.nav_open, R.string.nav_close)
+        supportFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            if (fragment is HomeFragment){
+                binding.toolbarLayout.visibility = View.VISIBLE
+                closeSearchView()
+            } else {
+                closeSearchView()
+                binding.toolbarLayout.visibility = View.GONE
+            }
+        }
 
         toggle.drawerArrowDrawable.color = Color.WHITE
         binding.drawerLayout.addDrawerListener(toggle)
@@ -160,6 +180,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .commit()
             }
         }
+    }
+
+    fun closeSearchView() {
+        binding.searchView.isIconified = true
+        binding.title.visibility = View.VISIBLE
+        binding.searchView.setQuery("", false)
     }
 
     private fun updateCacheData() {

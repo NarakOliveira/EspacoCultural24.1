@@ -27,4 +27,11 @@
     <style name="Theme.EspaçoCultural.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.EspaçoCultural.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.EspaçoCultural.SearchView" parent="ThemeOverlay.Material3.Search">
+        <item name="android:editTextColor">@color/white</item>
+        <item name="android:textColorHint">#EEEEDD</item>
+        <item name="colorControlNormal">#EEEEEE</item>
+    </style>
+
 </resources>
