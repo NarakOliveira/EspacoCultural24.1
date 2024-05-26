@@ -16,7 +16,7 @@
 - [x] O sistema deve ter um botão para o usuário realizar o login na tela de login
 - [x] O sistema deve exibir uma mensagem de erro caso as informações inseridas forem incorretas na tela de login
 - [x] O sistema deve exibir uma lista de obras mais relevantes na tela incial
-- [ ] O sistema deve exibir as exposições em ordem de mais recente quando o usuário scrollar a tela inicial
+- [x] O sistema deve exibir as exposições em ordem de mais recente quando o usuário scrollar a tela inicial
 - [x] O sistema deve ter um botão para o usuário abrir uma aba de comentario para uma obra
 - [ ] A tela inicial deve ter uma SearchView para pesquisar por uma determinada obra
 - [x] A tela inicial deve ter um FAB para o usuário ir para tela de visitas  rapidamente

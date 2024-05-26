@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.espaco.cultural.R
 import com.espaco.cultural.adapters.ArtWorkAdapter
 import com.espaco.cultural.database.ArtWorkDB

@@ -22,7 +22,7 @@ class ArtWorkAdapter: RecyclerView.Adapter<ArtWorkAdapter.ArtWorkHolder>() {
     }
 
     override fun onBindViewHolder(holder: ArtWorkHolder, position: Int) {
-        val artWork = artWorks[position]
+        val artWork = artWorks[artWorks.size - position - 1]
         holder.bind(artWork)
 
         holder.itemView.setOnClickListener {
