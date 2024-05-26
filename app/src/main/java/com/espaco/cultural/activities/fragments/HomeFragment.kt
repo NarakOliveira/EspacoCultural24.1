@@ -112,4 +112,5 @@ class HomeFragment : Fragment() {
         }
 
         artWorkAdapter.updateData(filteredList)
-    }}
+    }
+}

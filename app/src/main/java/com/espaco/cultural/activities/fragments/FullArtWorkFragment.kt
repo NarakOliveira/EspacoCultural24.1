@@ -59,8 +59,13 @@ class FullArtWorkFragment : Fragment() {
         adapter.setOnLikeClicked {
             val newComment = it
             val userIndex = newComment.usersLiked.indexOf(userPreferences.registration)
-            if (userIndex != -1) newComment.usersLiked.removeAt(userIndex)
-            else newComment.usersLiked.add(userPreferences.registration)
+            if (userIndex != -1) {
+                CommentsDB.likeComment(artWork, it, userPreferences.registration, false)
+                newComment.usersLiked.removeAt(userIndex)
+            } else {
+                CommentsDB.likeComment(artWork, it, userPreferences.registration, true)
+                newComment.usersLiked.add(userPreferences.registration)
+            }
             adapter.updateComment(it, newComment)
         }
 
@@ -83,10 +88,8 @@ class FullArtWorkFragment : Fragment() {
             binding.commentEditText.setText("")
 
             val user = User(userPreferences.registration, userPreferences.name, userPreferences.picture, userPreferences.isAdmin)
-            val comment = Comment(user.registration, content, ArrayList())
-
+            val comment = CommentsDB.publishComment(artWork, Comment("", user.registration, content, ArrayList()))
             adapter.addComment(user, comment)
-            CommentsDB.publishComment(artWork, comment)
         }
 
         return binding.root
