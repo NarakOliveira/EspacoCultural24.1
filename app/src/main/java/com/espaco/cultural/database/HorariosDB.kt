@@ -16,7 +16,8 @@ class HorariosDB {
                 val horarios = ArrayList<Horario>()
                 it.children.forEach { child ->
                     val capacity = child.child("capacity").getValue(Int::class.java) ?: 0
-                    val horario = Horario(child.key!!.toLong(), capacity, arrayListOf())
+                    val matricula = child.child("author").getValue(String::class.java) ?: ""
+                    val horario = Horario(matricula, child.key!!.toLong(), capacity, arrayListOf())
 
                     val confirmedPeoples = child.child("visitors").children
                     confirmedPeoples.forEach { registration ->

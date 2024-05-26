@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.espaco.cultural.R
 import com.espaco.cultural.entities.Horario
+import com.espaco.cultural.entities.User
 import java.util.Calendar
 import java.util.TimeZone
 import java.util.logging.Handler
@@ -23,6 +24,7 @@ import kotlin.math.sign
 
 class HorarioAdapter : RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
     private var horarios:  ArrayList<Horario> = ArrayList()
+    private var users: HashMap<String, User> = HashMap()
     private lateinit var onHorarioClicked: (horario: Horario) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HorarioHolder {
@@ -46,8 +48,9 @@ class HorarioAdapter : RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(horarios: ArrayList<Horario>) {
+    fun updateData(users: HashMap<String, User>, horarios: ArrayList<Horario>) {
         this.horarios = horarios
+        this.users = users
         notifyDataSetChanged()
     }
 

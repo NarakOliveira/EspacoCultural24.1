@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.espaco.cultural.R
 import com.espaco.cultural.adapters.HorarioAdapter
 import com.espaco.cultural.database.HorariosDB
+import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentVisitsBinding
 
@@ -91,12 +92,16 @@ class VisitsFragment : Fragment() {
             val month = calendar.get(Calendar.MONTH)
             val year = calendar.get(Calendar.YEAR)
 
-            HorariosDB.getHorarios(day, month, year) {
-                if (it.size > 0) {
+            HorariosDB.getHorarios(day, month, year) { horarios ->
+                if (horarios.size > 0) {
                     binding.textView4.visibility = View.GONE
                     binding.recyclerView.visibility = View.VISIBLE
                 }
-                adapter.updateData(it)
+                val registrations: LinkedHashSet<String> = LinkedHashSet()
+                horarios.forEach { registrations.add(it.matricula) }
+                UserDB.findUsers(registrations) {
+                    adapter.updateData(it, horarios)
+                }
             }
         }
 
