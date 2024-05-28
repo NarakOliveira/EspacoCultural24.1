@@ -9,6 +9,8 @@
 - [ ] Adicionar as notificações (fazer logo pq vai dar trabalho)
 - [x] Adicionar pras pessoas poderem responder comentarios (se não der tempo faz so um sistema de curtida)
 - [ ] Adicionar um modo anonimo (so caso sobre muito tempo pra fazer isso)
+- [ ] Adicionar tela pro admin ver os horario que foram solicitado e aceitar ou não
+- [ ] Adicionar tela pra editar ou deletar um obra
 
 
 ### Requisitos funcionais
@@ -28,4 +30,4 @@
 - [x] A secção de segurança da tela de configurações deve ter um switch 'Exigir senha'
 - [x] A secção de notificações da tela de configurações deve ter dois switch: 'Novas exposições' e 'Interações'
 - [x] A tela de visitas deve exibir um conjuto de horarios disponiveis para visitação
-- [ ] A tela de visitas deve ter um botão para o usuário agendar uma visitação
+- [x] A tela de visitas deve ter um botão para o usuário agendar uma visitação

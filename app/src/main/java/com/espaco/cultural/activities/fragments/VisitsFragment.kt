@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -28,7 +27,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.espaco.cultural.R
 import com.espaco.cultural.adapters.HorarioAdapter
 import com.espaco.cultural.database.HorariosDB
-import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentVisitsBinding
 import com.espaco.cultural.entities.Horario
@@ -176,9 +174,8 @@ class VisitsFragment : Fragment() {
         layout.addView(editText)
 
         editText.addTextChangedListener {
-            if (it == null) return@addTextChangedListener
-            if (it.toString().isEmpty()) editText.setText("1")
-            else if (Integer.parseInt(it.toString()) <= 0) editText.setText("1")
+            if (it == null || it.isEmpty()) return@addTextChangedListener
+            if (Integer.parseInt(it.toString()) <= 0) editText.setText("1")
             else if (Integer.parseInt(it.toString()) > 30) editText.setText("30")
         }
 
@@ -200,9 +197,11 @@ class VisitsFragment : Fragment() {
             .setMinute(binding.calendarView.selectedDayCalendar.get(Calendar.MINUTE))
             .build()
 
+        val positiveButtonText = if (userPreferences.isAdmin) "Agendar" else "Solicitar"
+
         val dialog = AlertDialog.Builder(context)
             .setView(layout)
-            .setPositiveButton("Agendar") { _, _ ->
+            .setPositiveButton(positiveButtonText) { _, _ ->
                 val c = binding.calendarView.selectedDayCalendar;
                 c.set(Calendar.HOUR_OF_DAY, picker.hour)
                 c.set(Calendar.MINUTE, picker.minute)
@@ -213,6 +212,7 @@ class VisitsFragment : Fragment() {
                     HorariosDB.publishHorario(horario)
                     adapter.addHorario(horario)
                 } else {
+                    HorariosDB.solicitHorario(horario)
                     Toast.makeText(context, "Solicitação de agendamento enviada para os organizadores", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -231,7 +231,9 @@ class VisitsFragment : Fragment() {
                     var minutes = picker.minute.toString()
                     if (hours.length < 2) hours = "0$hours"
                     if (minutes.length < 2) minutes = "0$minutes"
-                    dialog.setTitle("Agendar horario as $hours:$minutes")
+
+                    if (userPreferences.isAdmin) dialog.setTitle("Agendar horario as $hours:$minutes")
+                    else dialog.setTitle("Solicitar horario as $hours:$minutes")
                     dialog.show()
                 } else {
                     Toast.makeText(context, "Existe um horario que esta em conflito com esse", Toast.LENGTH_SHORT).show()

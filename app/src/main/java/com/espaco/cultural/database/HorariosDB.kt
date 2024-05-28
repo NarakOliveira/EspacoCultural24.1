@@ -103,5 +103,13 @@ class HorariosDB {
             ref.child("confirmedPeoples").setValue(horario.confirmedPeople.size)
             ref.child("public").setValue(horario.public)
         }
+
+        fun solicitHorario(horario: Horario) {
+            val ref = Firebase.database.reference.child("pendingHorarios")
+                .child(horario.timestamp.toString())
+            ref.child("author").setValue(horario.matricula)
+            ref.child("capacity").setValue(horario.capacity)
+            ref.child("public").setValue(horario.public)
+        }
     }
 }
