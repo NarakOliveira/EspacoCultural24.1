@@ -37,7 +37,7 @@ public class CalendarView extends View {
 
     private Calendar todaysCalendar;
     private Calendar currentMonthCalendar;
-    private Calendar selectedDayCalendar;
+    public Calendar selectedDayCalendar;
 
     private int width, height, oldWidth, oldHeight;
     private int headerHeight, bodyHeight;

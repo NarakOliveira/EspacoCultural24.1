@@ -1,18 +1,26 @@
 package com.espaco.cultural.activities.fragments
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.setMargins
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.espaco.cultural.R
@@ -21,10 +29,15 @@ import com.espaco.cultural.database.HorariosDB
 import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentVisitsBinding
+import com.google.android.material.timepicker.MaterialTimePicker
 
 
 class VisitsFragment : Fragment() {
     private lateinit var binding: FragmentVisitsBinding
+
+    private lateinit var context: Context
+    private lateinit var userPreferences: UserPreferences
+    private lateinit var adapter: HorarioAdapter
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreateView(
@@ -36,9 +49,16 @@ class VisitsFragment : Fragment() {
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
         actionBar?.apply { title = "Visitas" }
 
-        val context = requireContext()
-        val userPreferences = UserPreferences(context)
-        val adapter = HorarioAdapter()
+        context = requireContext()
+        userPreferences = UserPreferences(context)
+        adapter = HorarioAdapter()
+
+        if (userPreferences.isAdmin) {
+            binding.floatingActionButton.visibility = View.VISIBLE
+            binding.floatingActionButton.setOnClickListener { addHorario() }
+        } else {
+            binding.floatingActionButton.visibility = View.GONE
+        }
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = GridLayoutManager(context, 5)
@@ -124,4 +144,42 @@ class VisitsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun addHorario() {
+        val editText = EditText(context)
+        editText.hint = "Número de pessoas"
+        editText.inputType = InputType.TYPE_CLASS_NUMBER
+
+        editText.addTextChangedListener {
+            if (it == null) return@addTextChangedListener
+            if (Integer.parseInt(it.toString()) <= 0) editText.setText("1")
+            if (Integer.parseInt(it.toString()) > 30) editText.setText("30")
+        }
+
+        val dialog = AlertDialog.Builder(context)
+            .setTitle("Criar horario")
+            .setView(editText)
+            .setPositiveButton("Criar") { _, _ ->
+            }
+            .setNegativeButton("Cancelar", null)
+
+        val picker = MaterialTimePicker.Builder()
+            .setTitleText("Selecionar horario")
+            .setPositiveButtonText("Confirmar")
+            .setNegativeButtonText("Cancelar")
+            .setHour(binding.calendarView.selectedDayCalendar.get(Calendar.HOUR))
+            .setMinute(binding.calendarView.selectedDayCalendar.get(Calendar.MINUTE))
+            .build()
+
+        picker.addOnPositiveButtonClickListener {
+            var hours = picker.hour.toString()
+            var minutes = picker.hour.toString()
+            if (hours.length < 10) hours = "0$hours"
+            if (minutes.length < 10) minutes = "0$minutes"
+            dialog.setMessage("Horario: $hours:$minutes")
+            dialog.show()
+        }
+        picker.show(parentFragmentManager, "")
+    }
 }
