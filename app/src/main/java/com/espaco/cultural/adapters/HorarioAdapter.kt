@@ -22,9 +22,8 @@ import java.util.TimeZone
 import java.util.logging.Handler
 import kotlin.math.sign
 
-class HorarioAdapter : RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
+class HorarioAdapter: RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
     private var horarios:  ArrayList<Horario> = ArrayList()
-    private var users: HashMap<String, User> = HashMap()
     private lateinit var onHorarioClicked: (horario: Horario) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HorarioHolder {
@@ -48,9 +47,8 @@ class HorarioAdapter : RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(users: HashMap<String, User>, horarios: ArrayList<Horario>) {
+    fun updateData(horarios: ArrayList<Horario>) {
         this.horarios = horarios
-        this.users = users
         notifyDataSetChanged()
     }
 
@@ -58,6 +56,11 @@ class HorarioAdapter : RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
     fun clear() {
         this.horarios.clear()
         notifyDataSetChanged()
+    }
+
+    fun addHorario(horario: Horario) {
+        this.horarios.add(horario)
+        this.notifyItemChanged(this.horarios.size - 1)
     }
 
     fun addPeople(oldHorario: Horario, matricula: String) {
@@ -82,12 +85,22 @@ class HorarioAdapter : RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
             if (horario.capacity <= horario.confirmedPeople.size) textHorario.paintFlags = textHorario.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             else textHorario.paintFlags = originalFlags
 
-            progressBar.max = horario.capacity
-            progressBar.progress = horario.confirmedPeople.size
+            if (horario.public) {
+                progressBar.visibility = View.VISIBLE
+                progressBar.max = horario.capacity
+                progressBar.progress = horario.confirmedPeople.size
+            } else {
+                progressBar.visibility = View.GONE
+            }
 
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar.timeInMillis = horario.timestamp
-            textHorario.text = "${calendar.get(Calendar.HOUR_OF_DAY)}:${calendar.get(Calendar.MINUTE)}"
+            var hours = calendar.get(Calendar.HOUR_OF_DAY).toString()
+            var minutes = calendar.get(Calendar.MINUTE).toString()
+
+            if (hours.length < 2) hours = "0$hours"
+            if (minutes.length < 2) minutes = "0$minutes"
+            textHorario.text = "$hours:$minutes"
         }
     }
 }

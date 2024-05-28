@@ -18,7 +18,8 @@ class HorariosDB {
                 it.children.forEach { child ->
                     val capacity = child.child("capacity").getValue(Int::class.java) ?: 0
                     val matricula = child.child("author").getValue(String::class.java) ?: ""
-                    val horario = Horario(matricula, child.key!!.toLong(), capacity, arrayListOf())
+                    val public = child.child("public").getValue(Boolean::class.java) ?: false
+                    val horario = Horario(matricula, child.key!!.toLong(), capacity, arrayListOf(), public)
 
                     val confirmedPeoples = child.child("visitors").children
                     confirmedPeoples.forEach { registration ->
@@ -93,6 +94,14 @@ class HorariosDB {
                 }
                 callback(false)
             }
+        }
+
+        fun publishHorario(horario: Horario) {
+            val ref = horariosReference.child(horario.timestamp.toString())
+            ref.child("author").setValue(horario.matricula)
+            ref.child("capacity").setValue(horario.capacity)
+            ref.child("confirmedPeoples").setValue(horario.confirmedPeople.size)
+            ref.child("public").setValue(horario.public)
         }
     }
 }

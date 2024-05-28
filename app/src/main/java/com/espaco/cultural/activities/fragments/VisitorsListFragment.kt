@@ -27,7 +27,8 @@ class VisitorsListFragment : Fragment() {
             args.getString("matricula") ?: "",
             args.getLong("timestamp") ?: -1,
             args.getInt("capacity") ?: -1,
-            args.getStringArrayList("confirmedPeople") ?: ArrayList()
+            args.getStringArrayList("confirmedPeople") ?: ArrayList(),
+            args.getBoolean("public")
         )
 
         val actionBar = (requireActivity() as AppCompatActivity).supportActionBar
