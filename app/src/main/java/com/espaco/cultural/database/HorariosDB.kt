@@ -1,12 +1,12 @@
 package com.espaco.cultural.database
 
 import com.espaco.cultural.entities.Horario
-import com.espaco.cultural.entities.User
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import java.util.Calendar
 import java.util.TimeZone
+import kotlin.math.abs
 
 class HorariosDB {
     companion object {
@@ -79,6 +79,19 @@ class HorariosDB {
                     visitors.add(registration)
                 }
                 callback(visitors)
+            }
+        }
+
+        fun hasConflictInHorario(calendar: Calendar, callback: (hasConflict: Boolean) -> Unit) {
+            getAllHorarios {
+                it.forEach { other  ->
+                    val delta = abs(calendar.timeInMillis - other.timeInMillis)
+                    if (delta <= 60 * 60 * 1000) {
+                        callback(true)
+                        return@getAllHorarios
+                    }
+                }
+                callback(false)
             }
         }
     }

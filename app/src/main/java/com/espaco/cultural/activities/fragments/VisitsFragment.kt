@@ -12,14 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.setMargins
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -53,12 +51,8 @@ class VisitsFragment : Fragment() {
         userPreferences = UserPreferences(context)
         adapter = HorarioAdapter()
 
-        if (userPreferences.isAdmin) {
-            binding.floatingActionButton.visibility = View.VISIBLE
-            binding.floatingActionButton.setOnClickListener { addHorario() }
-        } else {
-            binding.floatingActionButton.visibility = View.GONE
-        }
+        binding.floatingActionButton.visibility = View.VISIBLE
+        binding.floatingActionButton.setOnClickListener { addHorario() }
 
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = GridLayoutManager(context, 5)
@@ -157,6 +151,16 @@ class VisitsFragment : Fragment() {
             if (Integer.parseInt(it.toString()) > 30) editText.setText("30")
         }
 
+        val progressBar = ProgressBar(context)
+        progressBar.isIndeterminate = true
+
+        val progressDialog = AlertDialog.Builder(context)
+            .setView(progressBar)
+            .setCancelable(false)
+            .create()
+
+        progressDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+
         val dialog = AlertDialog.Builder(context)
             .setTitle("Criar horario")
             .setView(editText)
@@ -173,13 +177,26 @@ class VisitsFragment : Fragment() {
             .build()
 
         picker.addOnPositiveButtonClickListener {
-            var hours = picker.hour.toString()
-            var minutes = picker.hour.toString()
-            if (hours.length < 10) hours = "0$hours"
-            if (minutes.length < 10) minutes = "0$minutes"
-            dialog.setMessage("Horario: $hours:$minutes")
-            dialog.show()
+            progressDialog.show()
+            val c = binding.calendarView.selectedDayCalendar;
+            c.set(Calendar.HOUR_OF_DAY, picker.hour)
+            c.set(Calendar.MINUTE, picker.minute)
+
+            HorariosDB.hasConflictInHorario(c) {
+                progressDialog.dismiss()
+                if (!it) {
+                    var hours = picker.hour.toString()
+                    var minutes = picker.minute.toString()
+                    if (hours.length < 2) hours = "0$hours"
+                    if (minutes.length < 2) minutes = "0$minutes"
+                    dialog.setMessage("Horario: $hours:$minutes")
+                    dialog.show()
+                } else {
+                    Toast.makeText(context, "Existe um horario que esta em conflito com esse", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
+
         picker.show(parentFragmentManager, "")
     }
 }
