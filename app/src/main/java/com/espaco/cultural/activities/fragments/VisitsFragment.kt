@@ -27,12 +27,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.espaco.cultural.R
 import com.espaco.cultural.adapters.HorarioAdapter
 import com.espaco.cultural.database.HorariosDB
+import com.espaco.cultural.database.NotificationDB
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentVisitsBinding
 import com.espaco.cultural.entities.Horario
+import com.espaco.cultural.entities.Notification
 import com.espaco.cultural.entities.User
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.timepicker.MaterialTimePicker
+import java.text.SimpleDateFormat
+import java.util.Date
 
 
 class VisitsFragment : Fragment() {
@@ -108,6 +112,26 @@ class VisitsFragment : Fragment() {
                 .show()
         }
 
+        adapter.setOnHorarioPressed {
+            if (!userPreferences.isAdmin) return@setOnHorarioPressed
+            AlertDialog.Builder(context)
+                .setTitle("Remover horario")
+                .setMessage("Tem certeza que deseja remover este horario?")
+                .setPositiveButton("Confirmar") { _, _ ->
+                    HorariosDB.removeHorario(it)
+                    adapter.removerHorario(it)
+                    Toast.makeText(context, "Horario removido com sucesso", Toast.LENGTH_SHORT).show()
+                    NotificationDB.pushNotification(it.matricula, Notification(
+                        "Horario removido",
+                        "Seu horario das ${getHorarioDate(it)} foi removido por um administrador!",
+                        NotificationDB.TYPE_HORARIO,
+                        Date().time
+                    ))
+                }
+                .setNegativeButton("Cancelar", null)
+                .show()
+        }
+
         binding.calendarView.setTodayTextColor(ContextCompat.getColor(context, R.color.purple_700))
         binding.calendarView.setSelectedDayBackgroundColor(ContextCompat.getColor(context, R.color.purple_500))
         updateAdapter(binding.calendarView.selectedDayCalendar)
@@ -133,6 +157,20 @@ class VisitsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SimpleDateFormat")
+    fun getHorarioDate(horario: Horario): String {
+        val calendar = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC"))
+        calendar.timeInMillis = horario.timestamp
+
+        var hours = calendar.get(java.util.Calendar.HOUR_OF_DAY).toString()
+        var minutes = calendar.get(java.util.Calendar.MINUTE).toString()
+
+        if (hours.length < 2) hours = "0$hours"
+        if (minutes.length < 2) minutes = "0$minutes"
+
+        val format = SimpleDateFormat("dd/MM/yy")
+        return "${format.format(calendar.time)} às $hours:$minutes"
+    }
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun updateAdapter(calendar: java.util.Calendar) {
@@ -189,7 +227,7 @@ class VisitsFragment : Fragment() {
         layout.addView(editText)
 
         editText.addTextChangedListener {
-            if (it == null || it.isEmpty()) return@addTextChangedListener
+            if (it.isNullOrEmpty()) return@addTextChangedListener
             if (Integer.parseInt(it.toString()) <= 0) editText.setText("1")
             else if (Integer.parseInt(it.toString()) > 30) editText.setText("30")
         }

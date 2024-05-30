@@ -25,6 +25,7 @@ import kotlin.math.sign
 class HorarioAdapter: RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
     private var horarios:  ArrayList<Horario> = ArrayList()
     private lateinit var onHorarioClicked: (horario: Horario) -> Unit
+    private lateinit var onHorarioPressed: (horario: Horario) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HorarioHolder {
         return HorarioHolder(LayoutInflater.from(parent.context).inflate(R.layout.horarios, parent, false))
@@ -39,6 +40,14 @@ class HorarioAdapter: RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
             if (adapterPosition != RecyclerView.NO_POSITION && this::onHorarioClicked.isInitialized) {
                 this.onHorarioClicked(horario)
             }
+        }
+
+        holder.itemView.setOnLongClickListener {
+            val adapterPosition = holder.getAdapterPosition()
+            if (adapterPosition != RecyclerView.NO_POSITION && this::onHorarioPressed.isInitialized) {
+                this.onHorarioPressed(horario)
+            }
+            return@setOnLongClickListener true
         }
     }
 
@@ -63,6 +72,12 @@ class HorarioAdapter: RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
         this.notifyItemChanged(this.horarios.size - 1)
     }
 
+    fun removerHorario(horario: Horario) {
+        val index = this.horarios.indexOf(horario)
+        this.horarios.removeAt(index)
+        this.notifyItemRemoved(index)
+    }
+
     fun addPeople(oldHorario: Horario, matricula: String) {
         val index = horarios.indexOf(oldHorario)
         if (index == -1) return
@@ -73,6 +88,10 @@ class HorarioAdapter: RecyclerView.Adapter<HorarioAdapter.HorarioHolder>() {
 
     fun setOnHorarioClicked(onHorarioClicked: (horario: Horario) -> Unit) {
        this.onHorarioClicked = onHorarioClicked;
+    }
+
+    fun setOnHorarioPressed(onHorarioPressed: (horario: Horario) -> Unit) {
+        this.onHorarioPressed = onHorarioPressed;
     }
 
     class HorarioHolder(itemView: View) : ViewHolder(itemView) {

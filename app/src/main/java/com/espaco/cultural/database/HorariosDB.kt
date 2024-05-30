@@ -122,6 +122,10 @@ class HorariosDB {
             ref.child("visitors").setValue(horario.confirmedPeople)
         }
 
+        fun removeHorario(horario: Horario) {
+            horariosReference.child(horario.timestamp.toString()).removeValue()
+        }
+
         fun solicitHorario(horario: Horario) {
             val ref = Firebase.database.reference.child("pendingHorarios")
                 .child(horario.timestamp.toString())
