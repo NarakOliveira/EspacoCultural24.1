@@ -71,7 +71,7 @@ class NotificationService : Service(), ValueEventListener {
                             .setContentText(content)
                             .setSmallIcon(R.drawable.logo_white)
 
-                        getSystemService(NotificationManager::class.java).notify(floor(Math.random() * 1000).toInt(), notification.build())
+                        getSystemService(NotificationManager::class.java).notify(snapshot.key.hashCode(), notification.build())
                     }
                 }
             }
