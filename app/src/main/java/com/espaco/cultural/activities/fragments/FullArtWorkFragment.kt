@@ -64,11 +64,14 @@ class FullArtWorkFragment : Fragment() {
                 CommentsDB.likeComment(artWork, it, userPreferences.registration, false)
                 newComment.usersLiked.removeAt(userIndex)
             } else {
-                NotificationDB.pushNotification(it.author, Notification(
-                    "${it.usersLiked.size+ 1} Likes",
-                    "${userPreferences.name} deu like no seu comentario na obra ${artWork.title}",
-                    NotificationDB.TYPE_INTERACTION
-                ))
+                if (!it.onceLiked.contains(userPreferences.registration)) {
+                    NotificationDB.pushNotification(it.author, Notification(
+                        "${it.usersLiked.size+ 1} Likes",
+                        "${userPreferences.name} deu like no seu comentario na obra ${artWork.title}",
+                        NotificationDB.TYPE_INTERACTION
+                    ))
+                    newComment.onceLiked.add(userPreferences.registration)
+                }
                 CommentsDB.likeComment(artWork, it, userPreferences.registration, true)
                 newComment.usersLiked.add(userPreferences.registration)
             }
@@ -94,7 +97,7 @@ class FullArtWorkFragment : Fragment() {
             binding.commentEditText.setText("")
 
             val user = User(userPreferences.registration, userPreferences.name, userPreferences.picture, userPreferences.isAdmin)
-            val comment = CommentsDB.publishComment(artWork, Comment("", user.registration, content, ArrayList()))
+            val comment = CommentsDB.publishComment(artWork, Comment("", user.registration, content, ArrayList(), ArrayList()))
             adapter.addComment(user, comment)
         }
 

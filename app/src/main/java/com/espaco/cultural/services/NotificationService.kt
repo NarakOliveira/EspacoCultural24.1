@@ -38,7 +38,7 @@ class NotificationService : Service(), ValueEventListener {
             getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
             val notification = Notification.Builder(this, CHANNEL_ID)
                 .setContentTitle("notification service")
-                .setSmallIcon(R.drawable.ic_notifications_active)
+                .setSmallIcon(R.drawable.logo_white)
 
             startForeground(1001, notification.build())
         }
