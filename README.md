@@ -11,7 +11,7 @@
 - [ ] Adicionar um modo anonimo (so caso sobre muito tempo pra fazer isso)
 - [ ] Adicionar tela pro admin ver os horario que foram solicitado e aceitar ou não
 - [ ] Adicionar tela pra editar ou deletar um obra
-- [ ] Adicionar tela pra ver todas as notificações recebidas
+- [x] Adicionar tela pra ver todas as notificações recebidas
 
 
 ### Requisitos funcionais

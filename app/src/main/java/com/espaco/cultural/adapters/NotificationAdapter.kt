@@ -38,15 +38,20 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
         private val textContent: TextView = itemView.findViewById(R.id.textContent)
         private val textDate: TextView = itemView.findViewById(R.id.textDate)
 
-        @SuppressLint("SimpleDateFormat")
+        @SuppressLint("SimpleDateFormat", "SetTextI18n")
         fun bind(notification: Notification) {
             textTitle.text = notification.title
             textContent.text = notification.content
 
             val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
             calendar.timeInMillis = notification.timestamp
-            val format = SimpleDateFormat("dd/mm/yy às hh:mm")
-            textDate.text = format.format(calendar.time)
+            var hours = calendar.get(Calendar.HOUR_OF_DAY).toString()
+            var minutes = calendar.get(Calendar.MINUTE).toString()
+
+            if (hours.length < 2) hours = "0$hours"
+            if (minutes.length < 2) minutes = "0$minutes"
+            val format = SimpleDateFormat("dd/MM/yy")
+            textDate.text = "${format.format(calendar.time)} às $hours:$minutes"
         }
     }
 }

@@ -12,6 +12,21 @@ class NotificationDB {
 
         private val notificationReference: DatabaseReference = Firebase.database.reference.child("notifications")
 
+        fun getNotifications(registration: String, callback: (notifications: ArrayList<Notification>) -> Unit) {
+            notificationReference.child(registration).get().addOnSuccessListener {
+                val notifications: ArrayList<Notification> = ArrayList()
+                it.children.forEach { child ->
+                    val title = child.child("title").getValue(String::class.java) ?: ""
+                    val content = child.child("content").getValue(String::class.java) ?: ""
+                    val wasSeen = child.child("wasSeen").getValue(Boolean::class.java) != false
+                    val type = child.child("type").getValue(String::class.java) ?: ""
+                    val timestamp = child.child("timestamp").getValue(Long::class.java)
+                    if (timestamp != null) notifications.add(Notification(title, content, type, timestamp, wasSeen))
+                }
+                callback(notifications)
+            }
+        }
+
         fun markAsWasSeen(userRegistration: String, keys: ArrayList<String>) {
             val ref = notificationReference.child(userRegistration)
             keys.forEach { ref.child(it).child("wasSeen").setValue(true) }
