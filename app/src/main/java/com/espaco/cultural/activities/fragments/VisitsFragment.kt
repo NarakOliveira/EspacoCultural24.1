@@ -110,6 +110,7 @@ class VisitsFragment : Fragment() {
 
         binding.calendarView.setTodayTextColor(ContextCompat.getColor(context, R.color.purple_700))
         binding.calendarView.setSelectedDayBackgroundColor(ContextCompat.getColor(context, R.color.purple_500))
+        updateAdapter(binding.calendarView.selectedDayCalendar)
 
         binding.calendarView.isDisableAllDates = true
         binding.calendarView.dayTextColor = Color.BLACK
@@ -126,35 +127,42 @@ class VisitsFragment : Fragment() {
         }
 
         binding.calendarView.setOnDateSelectListener {calendar ->
-            binding.textView4.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-            adapter.clear();
-
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-            val month = calendar.get(Calendar.MONTH)
-            val year = calendar.get(Calendar.YEAR)
-
-            HorariosDB.getHorarios(day, month, year) { horarios ->
-                if (horarios.size > 0) {
-                    binding.textView4.visibility = View.GONE
-                    binding.recyclerView.visibility = View.VISIBLE
-                }
-
-                var i = horarios.size-1
-                while (i >= 0) {
-                    val it = horarios[i]
-                    println(it.matricula + " "  + it.public)
-                    if (!userPreferences.isAdmin && !it.public && it.matricula != userPreferences.registration) {
-                        horarios.removeAt(i)
-                    }
-                    i--
-                }
-
-                adapter.updateData(horarios)
-            }
+            updateAdapter(calendar)
         }
 
+
         return binding.root
+    }
+
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun updateAdapter(calendar: java.util.Calendar) {
+        binding.textView4.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
+        adapter.clear();
+
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        val month = calendar.get(Calendar.MONTH)
+        val year = calendar.get(Calendar.YEAR)
+
+        HorariosDB.getHorarios(day, month, year) { horarios ->
+            if (horarios.size > 0) {
+                binding.textView4.visibility = View.GONE
+                binding.recyclerView.visibility = View.VISIBLE
+            }
+
+            var i = horarios.size - 1
+            while (i >= 0) {
+                val it = horarios[i]
+                println(it.matricula + " " + it.public)
+                if (!userPreferences.isAdmin && !it.public && it.matricula != userPreferences.registration) {
+                    horarios.removeAt(i)
+                }
+                i--
+            }
+
+            adapter.updateData(horarios)
+        }
     }
 
     @SuppressLint("SetTextI18n")
