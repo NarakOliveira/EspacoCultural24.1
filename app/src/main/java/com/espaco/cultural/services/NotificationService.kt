@@ -24,6 +24,7 @@ class NotificationService : Service(), ValueEventListener {
     companion object {
         private const val CHANNEL_ID = "notification service"
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         val userPreferences = UserPreferences(this)

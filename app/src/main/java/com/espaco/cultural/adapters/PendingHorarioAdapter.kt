@@ -55,6 +55,12 @@ class PendingHorarioAdapter : RecyclerView.Adapter<PendingHorarioAdapter.Pending
         notifyDataSetChanged()
     }
 
+    fun removeHorario(horario: Horario) {
+        val index = horarios.indexOf(horario)
+        horarios.removeAt(index)
+        notifyItemRemoved(index)
+    }
+
     fun setOnConfirmClicked(onConfirmClicked: (horario : Horario) -> Unit) {
         this.onConfirmClicked = onConfirmClicked
     }

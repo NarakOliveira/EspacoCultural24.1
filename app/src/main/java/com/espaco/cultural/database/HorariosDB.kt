@@ -128,10 +128,11 @@ class HorariosDB {
         }
 
         fun confirmHorario(horario: Horario) {
+            horario.confirmedPeople.add(horario.matricula)
             publishHorario(horario)
             removeSolicitHorario(horario)
         }
-        
+
         fun removeSolicitHorario(horario: Horario) {
             Firebase.database.reference.child("pendingHorarios").child(horario.timestamp.toString()).removeValue()
         }
