@@ -126,5 +126,14 @@ class HorariosDB {
                 callback(horarios)
             }
         }
+
+        fun confirmHorario(horario: Horario) {
+            publishHorario(horario)
+            removeSolicitHorario(horario)
+        }
+        
+        fun removeSolicitHorario(horario: Horario) {
+            Firebase.database.reference.child("pendingHorarios").child(horario.timestamp.toString()).removeValue()
+        }
     }
 }

@@ -9,6 +9,7 @@ class NotificationDB {
     companion object {
         const val TYPE_INTERACTION = "interaction"
         const val TYPE_EXPOSITION = "exposition"
+        const val TYPE_HORARIO = "horario"
 
         private val notificationReference: DatabaseReference = Firebase.database.reference.child("notifications")
 
