@@ -1,6 +1,7 @@
 package com.espaco.cultural.database
 
 import com.espaco.cultural.entities.Horario
+import com.espaco.cultural.entities.User
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -42,13 +43,13 @@ class HorariosDB {
             }
         }
 
-        fun getAllHorariosForUser(registration: String, callback: (horarios: ArrayList<Calendar>) -> Unit) {
+        fun getAllHorariosForUser(user: User, callback: (horarios: ArrayList<Calendar>) -> Unit) {
             horariosReference.get().addOnSuccessListener {
                 val horarios = ArrayList<Calendar>()
                 it.children.forEach { child ->
                     val author = child.child("author").getValue(String::class.java) ?: "None"
                     val isPublic = child.child("public").getValue(Boolean::class.java) == true
-                    if (isPublic || registration == author) {
+                    if (isPublic || user.registration == author || user.isAdmin) {
                         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
                         calendar.timeInMillis = child.key!!.toLong()
                         horarios.add(calendar)

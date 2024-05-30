@@ -42,7 +42,8 @@ class VisitorsListFragment : Fragment() {
 
         HorariosDB.getVisitors(horario) {
             UserDB.findUsers(it) {users ->
-                binding.linear.visibility = View.GONE
+                if (users.isEmpty()) binding.linear.visibility = View.VISIBLE
+                else binding.linear.visibility = View.GONE
                 adapter.updateData(ArrayList(users.values))
             }
         }

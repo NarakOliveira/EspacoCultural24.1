@@ -30,6 +30,7 @@ import com.espaco.cultural.database.HorariosDB
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentVisitsBinding
 import com.espaco.cultural.entities.Horario
+import com.espaco.cultural.entities.User
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.timepicker.MaterialTimePicker
 
@@ -112,7 +113,12 @@ class VisitsFragment : Fragment() {
 
         binding.calendarView.isDisableAllDates = true
         binding.calendarView.dayTextColor = Color.BLACK
-        HorariosDB.getAllHorariosForUser(userPreferences.registration) { dates ->
+        HorariosDB.getAllHorariosForUser(User(
+            userPreferences.registration,
+                userPreferences.name,
+                userPreferences.picture,
+                userPreferences.isAdmin
+        )) { dates ->
             dates.forEach {
                 binding.calendarView.enableDate(it)
             }
@@ -138,7 +144,7 @@ class VisitsFragment : Fragment() {
                 while (i >= 0) {
                     val it = horarios[i]
                     println(it.matricula + " "  + it.public)
-                    if (!it.public && it.matricula != userPreferences.registration) {
+                    if (!userPreferences.isAdmin && !it.public && it.matricula != userPreferences.registration) {
                         horarios.removeAt(i)
                     }
                     i--
