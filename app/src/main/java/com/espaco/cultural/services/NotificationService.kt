@@ -56,6 +56,7 @@ class NotificationService : Service(), ValueEventListener {
         val settingsPreferences = SettingsPreferences(this)
 
         if (!userPreferences.isLogged()) return
+        if (notificationsSnapshot.key.toString() != userPreferences.registration) return
 
         val keys = ArrayList<String>()
         notificationsSnapshot.children.forEach { snapshot ->

@@ -164,7 +164,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .setPositiveButton("Desconectar") { _, _ ->
                         userPreferences.clear()
                         settingsPreferences.clear()
-                        
+
                         stopService(Intent(this, NotificationService::class.java))
                         startActivity(Intent(this, LoginActivity::class.java))
                         finishAffinity()
