@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide
 import com.espaco.cultural.R
 import com.espaco.cultural.activities.fragments.FullArtWorkFragment
 import com.espaco.cultural.activities.fragments.HomeFragment
+import com.espaco.cultural.activities.fragments.NfcFragment
 import com.espaco.cultural.activities.fragments.NotificationFragment
 import com.espaco.cultural.activities.fragments.PendingHorarioFragment
 import com.espaco.cultural.activities.fragments.SettingsFragment
@@ -138,6 +139,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .replace(R.id.fragmentContainer, VisitsFragment()).commit()
             }
 
+            R.id.nav_nfc -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, NfcFragment()).commit()
+            }
+
             R.id.nav_notifications -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, NotificationFragment()).commit()
@@ -181,6 +187,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
         binding.navigationView.menu.findItem(R.id.nav_pending).isVisible = userPreferences.isAdmin
+
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        binding.navigationView.menu.findItem(R.id.nav_nfc).isVisible = nfcAdapter != null
     }
 
     @Deprecated("Deprecated in Java")

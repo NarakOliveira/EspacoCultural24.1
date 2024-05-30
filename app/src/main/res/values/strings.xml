@@ -27,4 +27,5 @@
     <string name="no_users_confirmed">Nenhum usuário confirmado</string>
     <string name="notifications">Notificações</string>
     <string name="solicited_schedules">Horarios solicitados</string>
+    <string name="detect_artwork">Detectar obra</string>
 </resources>
