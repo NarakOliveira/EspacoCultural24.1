@@ -83,6 +83,7 @@ class CommentsAdapter(val userRegistration: String): RecyclerView.Adapter<Commen
 
             Glide.with(imageUser)
                 .load(user?.picture ?: "None")
+                .circleCrop()
                 .placeholder(R.drawable.no_user_picture)
                 .error(R.drawable.no_user_picture)
                 .into(imageUser)

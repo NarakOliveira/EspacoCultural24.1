@@ -44,6 +44,7 @@ class VisitorsAdapter : RecyclerView.Adapter<VisitorsAdapter.VisitorsHolder>() {
 
             Glide.with(imageUser)
                 .load(user.picture)
+                .circleCrop()
                 .placeholder(R.drawable.no_user_picture)
                 .error(R.drawable.no_user_picture)
                 .into(imageUser)

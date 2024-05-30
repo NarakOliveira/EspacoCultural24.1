@@ -249,6 +249,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Glide.with(this)
             .load(userPreferences.picture)
+            .circleCrop()
             .error(R.drawable.no_user_picture)
             .into(userImage)
     }
