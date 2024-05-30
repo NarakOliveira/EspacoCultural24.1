@@ -20,7 +20,7 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationAdapter.Notificatio
     }
 
     override fun onBindViewHolder(holder: NotificationHolder, position: Int) {
-        holder.bind(notifications[position])
+        holder.bind(notifications[notifications.size - position - 1])
     }
 
     override fun getItemCount(): Int {
