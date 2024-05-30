@@ -10,6 +10,7 @@ import android.nfc.NfcAdapter
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import android.provider.SyncStateContract
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -35,8 +36,10 @@ import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.database.preferences.SettingsPreferences
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.ActivityMainBinding
+import com.espaco.cultural.services.NotificationService
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.Constants
 import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -161,7 +164,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .setPositiveButton("Desconectar") { _, _ ->
                         userPreferences.clear()
                         settingsPreferences.clear()
-
+                        
+                        stopService(Intent(this, NotificationService::class.java))
                         startActivity(Intent(this, LoginActivity::class.java))
                         finishAffinity()
                     }
