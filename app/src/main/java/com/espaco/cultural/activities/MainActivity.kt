@@ -10,7 +10,6 @@ import android.nfc.NfcAdapter
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
@@ -27,6 +26,7 @@ import com.espaco.cultural.R
 import com.espaco.cultural.activities.fragments.FullArtWorkFragment
 import com.espaco.cultural.activities.fragments.HomeFragment
 import com.espaco.cultural.activities.fragments.NotificationFragment
+import com.espaco.cultural.activities.fragments.PendingHorarioFragment
 import com.espaco.cultural.activities.fragments.SettingsFragment
 import com.espaco.cultural.activities.fragments.VisitorsListFragment
 import com.espaco.cultural.activities.fragments.VisitsFragment
@@ -140,6 +140,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .replace(R.id.fragmentContainer, NotificationFragment()).commit()
             }
 
+            R.id.nav_pending -> {
+                if (userPreferences.isAdmin) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainer, PendingHorarioFragment()).commit()
+                } else {
+                    Toast.makeText(this, "Você não tem permissão para acessar isso", Toast.LENGTH_SHORT).show()
+                }
+            }
+
             R.id.nav_settings-> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, SettingsFragment()).commit()
@@ -163,6 +172,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.navigationView.menu.findItem(R.id.nav_pending).isVisible = userPreferences.isAdmin
     }
 
     @Deprecated("Deprecated in Java")

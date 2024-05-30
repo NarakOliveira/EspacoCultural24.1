@@ -26,4 +26,5 @@
     <string name="send_comment">Enviar comentario</string>
     <string name="no_users_confirmed">Nenhum usuário confirmado</string>
     <string name="notifications">Notificações</string>
+    <string name="solicited_schedules">Horarios solicitados</string>
 </resources>
