@@ -4,9 +4,9 @@ import android.content.Context
 
 class UserPreferences(context: Context){
     companion object {
-        const val USER_INFO = "user_info"
+        private const val USER_INFO = "user_info"
 
-        const val USER_REGISTRATION = "registration"
+        private const val USER_REGISTRATION = "registration"
         private const val USER_NAME = "name"
         private const val USER_PICTURE = "picture"
         private const val USER_IS_ADMIN = "is_admin"

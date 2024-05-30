@@ -7,8 +7,10 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.espaco.cultural.R
+import com.espaco.cultural.database.NotificationDB
 import com.espaco.cultural.database.preferences.SettingsPreferences
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.google.firebase.database.DataSnapshot
@@ -47,26 +49,36 @@ class NotificationService : Service(), ValueEventListener {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onDataChange(snapshot: DataSnapshot) {
+    override fun onDataChange(notificationsSnapshot: DataSnapshot) {
         val userPreferences = UserPreferences(this)
         val settingsPreferences = SettingsPreferences(this)
 
         if (!userPreferences.isLogged()) return
-        if (snapshot.child("wasSeen").getValue(Boolean::class.java) != false) return
 
-        val type = snapshot.child("type").getValue(String::class.java) ?: return
-        if (type == "interaction" && !settingsPreferences.interactions) return
-        if (type == "exposition" && !settingsPreferences.newExposition) return
+        var notificationId = 100
+        val keys = ArrayList<String>()
+        notificationsSnapshot.children.forEach { snapshot ->
+            if (snapshot.child("wasSeen").getValue(Boolean::class.java) == false)  {
+                val type = snapshot.child("type").getValue(String::class.java)
+                if (type != null) {
+                    if (!(type == NotificationDB.TYPE_INTERACTION && !settingsPreferences.interactions || type == NotificationDB.TYPE_EXPOSITION && !settingsPreferences.newExposition))  {
+                        val title = snapshot.child("title").getValue(String::class.java) ?: ""
+                        val content = snapshot.child("content").getValue(String::class.java) ?: ""
 
-        val title = snapshot.child("title").getValue(String::class.java) ?: ""
-        val content = snapshot.child("content").getValue(String::class.java) ?: ""
+                        val notification = Notification.Builder(this, CHANNEL_ID)
+                            .setContentTitle(title)
+                            .setContentText(content)
+                            .setSmallIcon(R.drawable.logo_white)
 
-        val notification = Notification.Builder(this, CHANNEL_ID)
-            .setContentTitle(title)
-            .setContentText(content)
-            .setSmallIcon(R.drawable.logo_white)
+                        getSystemService(NotificationManager::class.java).notify(notificationId, notification.build())
+                        keys.add(snapshot.key.toString())
+                        notificationId += 1
+                    }
+                }
+            }
+        }
 
-        getSystemService(NotificationManager::class.java).notify(100, notification.build())
+        NotificationDB.markAsWasSeen(userPreferences.registration, keys)
     }
 
     override fun onCancelled(error: DatabaseError) {

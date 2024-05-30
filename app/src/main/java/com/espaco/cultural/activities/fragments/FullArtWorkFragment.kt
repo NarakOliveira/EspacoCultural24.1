@@ -17,7 +17,6 @@ import com.espaco.cultural.databinding.FragmentFullArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
 import com.espaco.cultural.entities.Comment
 import com.espaco.cultural.entities.User
-import java.util.Collections
 
 
 class FullArtWorkFragment : Fragment() {
