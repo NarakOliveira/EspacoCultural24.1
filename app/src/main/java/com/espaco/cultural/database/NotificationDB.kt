@@ -26,7 +26,7 @@ class NotificationDB {
             ref.child(key).child("type").setValue(notification.type)
             ref.child(key).child("wasSeen").setValue(notification.wasSeen)
         }
-        
+
         fun broadcastNotification(registrations: ArrayList<String>, notification: Notification) {
             registrations.forEach { pushNotification(it, notification) }
         }

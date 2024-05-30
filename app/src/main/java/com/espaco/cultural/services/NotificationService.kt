@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlin.math.floor
 
 class NotificationService : Service(), ValueEventListener {
     companion object {
@@ -55,10 +56,10 @@ class NotificationService : Service(), ValueEventListener {
 
         if (!userPreferences.isLogged()) return
 
-        var notificationId = 100
         val keys = ArrayList<String>()
         notificationsSnapshot.children.forEach { snapshot ->
             if (snapshot.child("wasSeen").getValue(Boolean::class.java) == false)  {
+                keys.add(snapshot.key.toString())
                 val type = snapshot.child("type").getValue(String::class.java)
                 if (type != null) {
                     if (!(type == NotificationDB.TYPE_INTERACTION && !settingsPreferences.interactions || type == NotificationDB.TYPE_EXPOSITION && !settingsPreferences.newExposition))  {
@@ -70,9 +71,7 @@ class NotificationService : Service(), ValueEventListener {
                             .setContentText(content)
                             .setSmallIcon(R.drawable.logo_white)
 
-                        getSystemService(NotificationManager::class.java).notify(notificationId, notification.build())
-                        keys.add(snapshot.key.toString())
-                        notificationId += 1
+                        getSystemService(NotificationManager::class.java).notify(floor(Math.random() * 1000).toInt(), notification.build())
                     }
                 }
             }
