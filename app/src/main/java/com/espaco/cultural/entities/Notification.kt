@@ -1,3 +1,3 @@
 package com.espaco.cultural.entities
 
-data class Notification(val title: String, val content: String, val type: String, var wasSeen: Boolean = false)
+data class Notification(val title: String, val content: String, val type: String, val timestamp: Long, var wasSeen: Boolean = false)

@@ -24,6 +24,7 @@ import com.espaco.cultural.databinding.FragmentCreateArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
 import com.espaco.cultural.entities.Notification
 import java.io.ByteArrayOutputStream
+import java.util.Date
 
 
 class CreateArtWorkFragment : Fragment() {
@@ -108,7 +109,8 @@ class CreateArtWorkFragment : Fragment() {
             val notification = Notification(
                 "Nova obra adicionada",
                 "Obra adicionada: $title Autor: $autor",
-                NotificationDB.TYPE_EXPOSITION
+                NotificationDB.TYPE_EXPOSITION,
+                Date().time
             )
             NotificationDB.broadcastNotification(it, notification)
         }

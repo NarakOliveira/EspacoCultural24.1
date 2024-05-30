@@ -25,6 +25,7 @@ class NotificationDB {
             ref.child(key).child("content").setValue(notification.content)
             ref.child(key).child("type").setValue(notification.type)
             ref.child(key).child("wasSeen").setValue(notification.wasSeen)
+            ref.child(key).child("timestamp").setValue(notification.timestamp)
         }
 
         fun broadcastNotification(registrations: ArrayList<String>, notification: Notification) {

@@ -19,6 +19,7 @@ import com.espaco.cultural.entities.ArtWork
 import com.espaco.cultural.entities.Comment
 import com.espaco.cultural.entities.Notification
 import com.espaco.cultural.entities.User
+import java.util.Date
 
 
 class FullArtWorkFragment : Fragment() {
@@ -68,7 +69,8 @@ class FullArtWorkFragment : Fragment() {
                     NotificationDB.pushNotification(it.author, Notification(
                         "${it.usersLiked.size+ 1} Likes",
                         "${userPreferences.name} deu like no seu comentario na obra ${artWork.title}",
-                        NotificationDB.TYPE_INTERACTION
+                        NotificationDB.TYPE_INTERACTION,
+                        Date().time
                     ))
                     newComment.onceLiked.add(userPreferences.registration)
                 }
