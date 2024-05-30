@@ -58,6 +58,7 @@ class HorariosDB {
                 callback(horarios)
             }
         }
+
         fun getAllHorarios(callback: (horarios: ArrayList<Calendar>) -> Unit) {
             horariosReference.get().addOnSuccessListener {
                 val horarios = ArrayList<Calendar>()
@@ -118,6 +119,7 @@ class HorariosDB {
             ref.child("capacity").setValue(horario.capacity)
             ref.child("confirmedPeoples").setValue(horario.confirmedPeople.size)
             ref.child("public").setValue(horario.public)
+            ref.child("visitors").setValue(horario.confirmedPeople)
         }
 
         fun solicitHorario(horario: Horario) {

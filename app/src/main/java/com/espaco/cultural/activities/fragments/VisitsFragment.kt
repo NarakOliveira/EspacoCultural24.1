@@ -130,7 +130,6 @@ class VisitsFragment : Fragment() {
             updateAdapter(calendar)
         }
 
-
         return binding.root
     }
 
@@ -227,6 +226,7 @@ class VisitsFragment : Fragment() {
                 if (userPreferences.isAdmin) {
                     HorariosDB.publishHorario(horario)
                     adapter.addHorario(horario)
+                    updateAdapter(binding.calendarView.selectedDayCalendar)
                 } else {
                     HorariosDB.solicitHorario(horario)
                     Toast.makeText(context, "Solicitação de agendamento enviada para os organizadores", Toast.LENGTH_SHORT).show()
