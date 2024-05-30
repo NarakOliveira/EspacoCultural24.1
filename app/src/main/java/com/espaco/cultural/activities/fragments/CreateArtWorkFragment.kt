@@ -5,7 +5,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Message
 import android.provider.MediaStore
 import android.util.Base64
 import android.view.LayoutInflater
@@ -19,11 +18,11 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
 import com.espaco.cultural.database.ArtWorkDB
+import com.espaco.cultural.database.NotificationDB
+import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.databinding.FragmentCreateArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.ktx.messaging
+import com.espaco.cultural.entities.Notification
 import java.io.ByteArrayOutputStream
 
 
@@ -105,6 +104,14 @@ class CreateArtWorkFragment : Fragment() {
         val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
         ArtWorkDB.publishArtWork(ArtWork("", title, autor, description, encoded))
 
+        UserDB.getAllUserRegistration {
+            val notification = Notification(
+                "Nova obra adicionada",
+                "Obra adicionada: $title Autor: $autor",
+                NotificationDB.TYPE_EXPOSITION
+            )
+            NotificationDB.broadcastNotification(it, notification)
+        }
         Toast.makeText(requireContext(), "Obra adicionada", Toast.LENGTH_SHORT).show()
         parentFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)

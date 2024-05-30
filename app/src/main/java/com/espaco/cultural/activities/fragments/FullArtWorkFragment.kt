@@ -11,11 +11,13 @@ import com.bumptech.glide.Glide
 import com.espaco.cultural.R
 import com.espaco.cultural.adapters.CommentsAdapter
 import com.espaco.cultural.database.CommentsDB
+import com.espaco.cultural.database.NotificationDB
 import com.espaco.cultural.database.UserDB
 import com.espaco.cultural.database.preferences.UserPreferences
 import com.espaco.cultural.databinding.FragmentFullArtWorkBinding
 import com.espaco.cultural.entities.ArtWork
 import com.espaco.cultural.entities.Comment
+import com.espaco.cultural.entities.Notification
 import com.espaco.cultural.entities.User
 
 
@@ -62,6 +64,11 @@ class FullArtWorkFragment : Fragment() {
                 CommentsDB.likeComment(artWork, it, userPreferences.registration, false)
                 newComment.usersLiked.removeAt(userIndex)
             } else {
+                NotificationDB.pushNotification(it.author, Notification(
+                    "${it.usersLiked.size+ 1} Likes",
+                    "${userPreferences.name} deu like no seu comentario na obra ${artWork.title}",
+                    NotificationDB.TYPE_INTERACTION
+                ))
                 CommentsDB.likeComment(artWork, it, userPreferences.registration, true)
                 newComment.usersLiked.add(userPreferences.registration)
             }

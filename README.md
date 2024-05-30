@@ -4,9 +4,9 @@
 - [x] Adicionar a integração com o rfid
 - [ ] Adicionar tela propria pra escanear rfid
 - [x] Adicionar uma local para pesquisar por uma obra
-- [ ] Adicionar tela de criar horario (so pra adm)
+- [x] Adicionar tela de criar horario (so pra adm)
 - [x] Adicionar uma tela pra mostrar quem se inscreveu em cada horario (so pra adm)
-- [ ] Adicionar as notificações (fazer logo pq vai dar trabalho)
+- [x] Adicionar as notificações (fazer logo pq vai dar trabalho)
 - [x] Adicionar pras pessoas poderem responder comentarios (se não der tempo faz so um sistema de curtida)
 - [ ] Adicionar um modo anonimo (so caso sobre muito tempo pra fazer isso)
 - [ ] Adicionar tela pro admin ver os horario que foram solicitado e aceitar ou não

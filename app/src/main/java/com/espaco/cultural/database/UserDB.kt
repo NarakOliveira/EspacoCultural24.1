@@ -57,5 +57,13 @@ class UserDB {
                 callback(users)
             }
         }
+
+        fun getAllUserRegistration(callback: (registrations: ArrayList<String>) -> Unit) {
+            usersReference.get().addOnSuccessListener {users ->
+                val registrations = ArrayList<String>()
+                users.children.forEach { registrations.add(it.key.toString()) }
+                callback(registrations)
+            }
+        }
     }
 }
