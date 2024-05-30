@@ -111,5 +111,20 @@ class HorariosDB {
             ref.child("capacity").setValue(horario.capacity)
             ref.child("public").setValue(horario.public)
         }
+
+        fun getAllSolicitsHorarios(callback: (ArrayList<Horario>) -> Unit) {
+            Firebase.database.reference.child("pendingHorarios").get().addOnSuccessListener {
+                val horarios = ArrayList<Horario>()
+                it.children.forEach { child ->
+                    val capacity = child.child("capacity").getValue(Int::class.java) ?: 0
+                    val matricula = child.child("author").getValue(String::class.java) ?: ""
+                    val public = child.child("public").getValue(Boolean::class.java) ?: false
+                    val horario = Horario(matricula, child.key!!.toLong(), capacity, arrayListOf(), public)
+
+                    horarios.add(horario);
+                }
+                callback(horarios)
+            }
+        }
     }
 }
