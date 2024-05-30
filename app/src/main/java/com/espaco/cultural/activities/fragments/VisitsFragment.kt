@@ -112,8 +112,10 @@ class VisitsFragment : Fragment() {
 
         binding.calendarView.isDisableAllDates = true
         binding.calendarView.dayTextColor = Color.BLACK
-        HorariosDB.getAllHorarios {dates ->
-            dates.forEach { binding.calendarView.enableDate(it) }
+        HorariosDB.getAllHorariosForUser(userPreferences.registration) { dates ->
+            dates.forEach {
+                binding.calendarView.enableDate(it)
+            }
             binding.calendarView.redraw()
         }
 

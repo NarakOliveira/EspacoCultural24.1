@@ -42,6 +42,21 @@ class HorariosDB {
             }
         }
 
+        fun getAllHorariosForUser(registration: String, callback: (horarios: ArrayList<Calendar>) -> Unit) {
+            horariosReference.get().addOnSuccessListener {
+                val horarios = ArrayList<Calendar>()
+                it.children.forEach { child ->
+                    val author = child.child("author").getValue(String::class.java) ?: "None"
+                    val isPublic = child.child("public").getValue(Boolean::class.java) == true
+                    if (isPublic || registration == author) {
+                        val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                        calendar.timeInMillis = child.key!!.toLong()
+                        horarios.add(calendar)
+                    }
+                }
+                callback(horarios)
+            }
+        }
         fun getAllHorarios(callback: (horarios: ArrayList<Calendar>) -> Unit) {
             horariosReference.get().addOnSuccessListener {
                 val horarios = ArrayList<Calendar>()
