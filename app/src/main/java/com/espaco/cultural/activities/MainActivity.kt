@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide
 import com.espaco.cultural.R
 import com.espaco.cultural.activities.fragments.FullArtWorkFragment
 import com.espaco.cultural.activities.fragments.HomeFragment
+import com.espaco.cultural.activities.fragments.NotificationFragment
 import com.espaco.cultural.activities.fragments.SettingsFragment
 import com.espaco.cultural.activities.fragments.VisitorsListFragment
 import com.espaco.cultural.activities.fragments.VisitsFragment
@@ -132,6 +133,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_visits -> {
                 supportFragmentManager.beginTransaction()
                     .replace(R.id.fragmentContainer, VisitsFragment()).commit()
+            }
+
+            R.id.nav_notifications -> {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragmentContainer, NotificationFragment()).commit()
             }
 
             R.id.nav_settings-> {
