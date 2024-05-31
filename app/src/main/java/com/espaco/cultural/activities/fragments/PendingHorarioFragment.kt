@@ -89,12 +89,12 @@ class PendingHorarioFragment : Fragment() {
         return binding.root
     }
 
-    fun updateListVisibility() {
+    private fun updateListVisibility() {
         if (adapter.itemCount == 0) binding.layout.visibility = View.VISIBLE
         else binding.layout.visibility = View.GONE
     }
 
-    fun confirmDialog(title: String, description: String, callback: () -> Unit) {
+    private fun confirmDialog(title: String, description: String, callback: () -> Unit) {
         AlertDialog.Builder(context)
             .setTitle(title)
             .setMessage(description)
@@ -104,7 +104,7 @@ class PendingHorarioFragment : Fragment() {
     }
 
     @SuppressLint("SimpleDateFormat")
-    fun getHorarioDate(horario: Horario): String {
+    private fun getHorarioDate(horario: Horario): String {
         val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
         calendar.timeInMillis = horario.timestamp
 
