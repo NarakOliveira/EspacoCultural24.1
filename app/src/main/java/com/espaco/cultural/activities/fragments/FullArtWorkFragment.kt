@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
+import com.espaco.cultural.activities.MainActivity
 import com.espaco.cultural.adapters.CommentsAdapter
 import com.espaco.cultural.database.CommentsDB
 import com.espaco.cultural.database.NotificationDB
@@ -57,6 +58,19 @@ class FullArtWorkFragment : Fragment() {
         val adapter = CommentsAdapter(userPreferences.registration)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
+
+        (activity as MainActivity).binding.imageEdit.setOnClickListener {
+            if (!userPreferences.isAdmin) return@setOnClickListener
+            val ldf = CreateArtWorkFragment()
+            args.clear()
+            args.putString("id", artWork.id)
+            ldf.setArguments(args)
+
+            parentFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(R.id.fragmentContainer, ldf)
+                .commit()
+        }
 
         adapter.setOnLikeClicked {
             val newComment = it

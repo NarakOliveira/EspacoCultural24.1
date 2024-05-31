@@ -1,5 +1,6 @@
 package com.espaco.cultural.activities.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -17,6 +18,7 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
+import com.espaco.cultural.activities.MainActivity
 import com.espaco.cultural.database.ArtWorkDB
 import com.espaco.cultural.database.NotificationDB
 import com.espaco.cultural.database.UserDB
@@ -30,12 +32,27 @@ import java.util.Date
 class CreateArtWorkFragment : Fragment() {
     private lateinit var binding: FragmentCreateArtWorkBinding
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { it?.let { onImagePick(it) } }
-    private var selectedUri: Uri? = null
+    private var image64: String? = null
+
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentCreateArtWorkBinding.inflate(inflater)
+
+        val activity = requireActivity() as MainActivity
+        val isEditing = arguments != null && requireArguments().containsKey("id")
+
+        if (isEditing) {
+            val artWorkId = arguments?.getString("id")
+            updateDataFromDB(artWorkId!!)
+
+            binding.button.text = "Alterar obra"
+            activity.binding.title.text = "Editar obra"
+            activity.binding.imageDelete.visibility = View.VISIBLE
+        }
+
         binding.imageView.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest.Builder()
                 .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -59,7 +76,7 @@ class CreateArtWorkFragment : Fragment() {
             val autor = binding.autorEditText.text.toString()
             val description = binding.descriptionEditText.text.toString()
 
-            if (selectedUri == null) {
+            if (image64 == null) {
                 Toast.makeText(requireContext(), "Insira uma imagem da obra", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -88,22 +105,15 @@ class CreateArtWorkFragment : Fragment() {
     }
 
     private fun onImagePick(uri: Uri) {
-        selectedUri = uri
+        updateImage64(uri)
         Glide.with(binding.imageView)
             .load(uri)
             .into(binding.imageView)
     }
 
     private fun uploadArtWork(title: String, autor: String, description: String) {
-        if (selectedUri == null) return
-        val bitmap = getCapturedImage(selectedUri!!)
-
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-
-        val encoded: String = Base64.encodeToString(byteArray, Base64.DEFAULT)
-        ArtWorkDB.publishArtWork(ArtWork("", title, autor, description, encoded))
+        if (image64 == null) return
+        ArtWorkDB.publishArtWork(ArtWork("", title, autor, description, image64!!))
 
         UserDB.getAllUserRegistration {
             val notification = Notification(
@@ -120,6 +130,17 @@ class CreateArtWorkFragment : Fragment() {
             .replace(R.id.fragmentContainer, HomeFragment())
             .commit()
     }
+
+    private fun updateImage64(uri: Uri) {
+        val bitmap = getCapturedImage(uri)
+
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val byteArray = byteArrayOutputStream.toByteArray()
+
+        image64 = Base64.encodeToString(byteArray, Base64.DEFAULT)
+    }
+
     private fun getCapturedImage(selectedPhotoUri: Uri): Bitmap {
         val contentResolver = requireActivity().contentResolver
         val bitmap = when {
@@ -133,5 +154,23 @@ class CreateArtWorkFragment : Fragment() {
             }
         }
         return bitmap
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateDataFromDB(id: String) {
+        ArtWorkDB.findArtWork(id) {
+            if (it == null) return@findArtWork
+
+            image64 = it.image
+            binding.titleEditText.setText(it.title)
+            binding.descriptionEditText.setText(it.description)
+            binding.autorEditText.setText(it.autor)
+
+            val imageByteArray: ByteArray = Base64.decode(it.image, Base64.DEFAULT)
+            Glide.with(binding.imageView)
+                .asBitmap()
+                .load(imageByteArray)
+                .into(binding.imageView)
+        }
     }
 }

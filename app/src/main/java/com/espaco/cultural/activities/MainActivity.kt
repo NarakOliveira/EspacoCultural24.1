@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import com.bumptech.glide.Glide
 import com.espaco.cultural.R
+import com.espaco.cultural.activities.fragments.CreateArtWorkFragment
 import com.espaco.cultural.activities.fragments.FullArtWorkFragment
 import com.espaco.cultural.activities.fragments.HomeFragment
 import com.espaco.cultural.activities.fragments.NfcFragment
@@ -49,6 +50,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var settingsPreferences: SettingsPreferences
     private var lastClickTime: Long = 0
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -77,6 +79,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.materialToolbar, R.string.nav_open, R.string.nav_close)
         supportFragmentManager.addFragmentOnAttachListener { _, fragment ->
+            closeSearchView()
+            binding.imageDelete.visibility = View.GONE
             if (fragment is HomeFragment || (fragment is FullArtWorkFragment && userPreferences.isAdmin)) {
                 if (fragment is HomeFragment) {
                     binding.searchView.visibility = View.VISIBLE
@@ -86,10 +90,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     binding.imageEdit.visibility = View.VISIBLE
                 }
 
+                binding.title.text = "Espaço Cultural"
                 binding.toolbarLayout.visibility = View.VISIBLE
-                closeSearchView()
+            } else if (fragment is CreateArtWorkFragment) {
+                binding.imageEdit.visibility = View.GONE
+                binding.searchView.visibility = View.GONE
+
+                binding.title.text = "Adicionar obra"
+                binding.toolbarLayout.visibility = View.VISIBLE
             } else {
-                closeSearchView()
                 binding.toolbarLayout.visibility = View.GONE
             }
         }
