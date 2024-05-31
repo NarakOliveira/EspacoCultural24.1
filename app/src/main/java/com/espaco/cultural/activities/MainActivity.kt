@@ -77,7 +77,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val toggle = ActionBarDrawerToggle(this, binding.drawerLayout, binding.materialToolbar, R.string.nav_open, R.string.nav_close)
         supportFragmentManager.addFragmentOnAttachListener { _, fragment ->
-            if (fragment is HomeFragment){
+            if (fragment is HomeFragment || (fragment is FullArtWorkFragment && userPreferences.isAdmin)) {
+                if (fragment is HomeFragment) {
+                    binding.searchView.visibility = View.VISIBLE
+                    binding.imageEdit.visibility = View.GONE
+                } else {
+                    binding.searchView.visibility = View.GONE
+                    binding.imageEdit.visibility = View.VISIBLE
+                }
+
                 binding.toolbarLayout.visibility = View.VISIBLE
                 closeSearchView()
             } else {
