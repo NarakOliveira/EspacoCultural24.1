@@ -24,7 +24,8 @@ class ArtWorkDB {
         }
 
         fun publishArtWork(artWork: ArtWork) {
-            val key: String = artWorkReference.push().getKey() ?: ""
+            val key = artWork.id.ifEmpty { artWorkReference.push().key ?: "" }
+            //val key: String = artWorkReference.push().getKey() ?: ""
             artWorkReference.child(key).child("title").setValue(artWork.title)
             artWorkReference.child(key).child("autor").setValue(artWork.autor)
             artWorkReference.child(key).child("description").setValue(artWork.description)

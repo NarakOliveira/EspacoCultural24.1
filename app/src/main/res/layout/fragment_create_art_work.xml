@@ -8,6 +8,21 @@
     android:padding="8dp"
     tools:context=".activities.fragments.CreateArtWorkFragment">
 
+    <LinearLayout
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -30,6 +45,7 @@
                     android:id="@+id/imageView"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_add_photo" />
             </androidx.cardview.widget.CardView>
 
