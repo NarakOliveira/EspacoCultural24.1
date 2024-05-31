@@ -25,17 +25,11 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="20dp">
-
-                    <ImageView
-                        android:id="@+id/imageUser"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        tools:srcCompat="@tools:sample/avatars" />
-                </androidx.cardview.widget.CardView>
+                <ImageView
+                    android:id="@+id/imageUser"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    tools:srcCompat="@tools:sample/avatars" />
 
                 <TextView
                     android:id="@+id/textName"

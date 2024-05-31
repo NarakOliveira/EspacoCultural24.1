@@ -6,17 +6,11 @@
     android:layout_height="wrap_content"
     android:padding="8dp">
 
-    <androidx.cardview.widget.CardView
+    <ImageView
+        android:id="@+id/userImage"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        app:cardCornerRadius="64dp">
-
-        <ImageView
-            android:id="@+id/userImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:srcCompat="@tools:sample/avatars" />
-    </androidx.cardview.widget.CardView>
+        tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
         android:layout_width="match_parent"
