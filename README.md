@@ -10,7 +10,7 @@
 - [x] Adicionar pras pessoas poderem responder comentarios (se não der tempo faz so um sistema de curtida)
 - [ ] Adicionar um modo anonimo (so caso sobre muito tempo pra fazer isso)
 - [x] Adicionar tela pro admin ver os horario que foram solicitado e aceitar ou não
-- [ ] Adicionar tela pra editar ou deletar um obra
+- [x] Adicionar tela pra editar ou deletar um obra
 - [x] Adicionar tela pra remover horario
 - [x] Adicionar tela pra ver todas as notificações recebidas
 
