@@ -45,5 +45,9 @@ class ArtWorkDB {
                 callback(null)
             }
         }
+
+        fun deleteArtWork(id: String) {
+            artWorkReference.child(id).removeValue()
+        }
     }
 }

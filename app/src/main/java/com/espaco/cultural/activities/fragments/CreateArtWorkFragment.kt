@@ -59,6 +59,18 @@ class CreateArtWorkFragment : Fragment() {
             binding.button.text = "Alterar obra"
             activity.binding.title.text = "Editar obra"
             activity.binding.imageDelete.visibility = View.VISIBLE
+
+            activity.binding.imageDelete.setOnClickListener {
+                confirmDialog("Deletar obra", "Tem certeza que deseja deletar essa obra?") {
+                    ArtWorkDB.deleteArtWork(artWorkId)
+                    Toast.makeText(context, "Obra deletada", Toast.LENGTH_SHORT).show()
+
+                    parentFragmentManager.beginTransaction()
+                        .setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right)
+                        .replace(R.id.fragmentContainer, HomeFragment())
+                        .commit()
+                }
+            }
         }
 
         binding.imageView.setOnClickListener {
@@ -85,7 +97,7 @@ class CreateArtWorkFragment : Fragment() {
             val description = binding.descriptionEditText.text.toString()
 
             if (image64 == null) {
-                Toast.makeText(requireContext(), "Insira uma imagem da obra", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Insira uma imagem da obra", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -128,7 +140,7 @@ class CreateArtWorkFragment : Fragment() {
         ArtWorkDB.publishArtWork(ArtWork(artWorkId, title, autor, description, image64!!))
 
         if (isEditing) {
-            Toast.makeText(requireContext(), "Obra editada", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Obra editada", Toast.LENGTH_SHORT).show()
         } else {
             UserDB.getAllUserRegistration {
                 val notification = Notification(
@@ -139,7 +151,7 @@ class CreateArtWorkFragment : Fragment() {
                 )
                 NotificationDB.broadcastNotification(it, notification)
             }
-            Toast.makeText(requireContext(), "Obra adicionada", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Obra adicionada", Toast.LENGTH_SHORT).show()
         }
 
         parentFragmentManager.beginTransaction()

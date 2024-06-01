@@ -1,7 +1,10 @@
 package com.espaco.cultural.activities.fragments
 
+import android.content.res.Resources
+import android.graphics.Point
 import android.os.Bundle
 import android.util.Base64
+import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +23,7 @@ import com.espaco.cultural.entities.ArtWork
 import com.espaco.cultural.entities.Comment
 import com.espaco.cultural.entities.Notification
 import com.espaco.cultural.entities.User
+import java.io.InputStream
 import java.util.Date
 
 
@@ -46,10 +50,12 @@ class FullArtWorkFragment : Fragment() {
         binding.textView5.text = artWork.description
 
         val imageByteArray: ByteArray = Base64.decode(artWork.image, Base64.DEFAULT)
+        val width = Resources.getSystem().displayMetrics.widthPixels
         Glide.with(this)
             .asBitmap()
             .load(imageByteArray)
             .placeholder(R.drawable.ic_downloading)
+            .override(width)
             .into(binding.imageView)
 
         val context = requireContext()
