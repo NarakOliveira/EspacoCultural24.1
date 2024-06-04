@@ -3,12 +3,14 @@ package com.espaco.cultural.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
+import android.nfc.NfcManager
 import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
@@ -53,7 +55,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var settingsPreferences: SettingsPreferences
     private var lastClickTime: Long = 0
 
-    private lateinit var nfcAdapter: NfcAdapter
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +65,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setSupportActionBar(binding.materialToolbar)
         binding.navigationView.setNavigationItemSelectedListener(this)
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
         userPreferences = UserPreferences(this)
         settingsPreferences = SettingsPreferences(this)
@@ -271,7 +271,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onResume()
         binding.navigationView.menu.findItem(R.id.nav_pending).isVisible = userPreferences.isAdmin
 
-        val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        val manager: NfcManager = this.getSystemService(Context.NFC_SERVICE) as NfcManager
+        val nfcAdapter = manager.defaultAdapter
         binding.navigationView.menu.findItem(R.id.nav_nfc).isVisible = nfcAdapter != null
 
         if (nfcAdapter == null) return
@@ -288,7 +289,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onPause() {
         super.onPause()
-        NfcAdapter.getDefaultAdapter(this)?.disableForegroundDispatch(this)
+        val manager: NfcManager = this.getSystemService(Context.NFC_SERVICE) as NfcManager
+        manager.defaultAdapter?.disableForegroundDispatch(this)
+        //NfcAdapter.getDefaultAdapter(this)?.disableForegroundDispatch(this)
     }
 
     @Deprecated("Deprecated in Java")
