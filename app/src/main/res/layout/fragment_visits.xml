@@ -28,7 +28,8 @@
         <com.espaco.cultural.views.CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            tools:visibility="gone" />
 
         <View
             android:id="@+id/divider"

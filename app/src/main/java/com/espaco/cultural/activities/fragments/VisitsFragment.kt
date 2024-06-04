@@ -120,6 +120,10 @@ class VisitsFragment : Fragment() {
                 .setPositiveButton("Confirmar") { _, _ ->
                     HorariosDB.removeHorario(it)
                     adapter.removerHorario(it)
+                    if (adapter.itemCount == 0) {
+                        binding.textView4.visibility = View.VISIBLE
+                        binding.calendarView.disableDate(binding.calendarView.selectedDayCalendar)
+                    }
                     Toast.makeText(context, "Horario removido com sucesso", Toast.LENGTH_SHORT).show()
                     NotificationDB.pushNotification(it.matricula, Notification(
                         "Horario removido",
@@ -265,6 +269,7 @@ class VisitsFragment : Fragment() {
                     HorariosDB.publishHorario(horario)
                     adapter.addHorario(horario)
                     updateAdapter(binding.calendarView.selectedDayCalendar)
+                    binding.calendarView.enableDate(binding.calendarView.selectedDayCalendar)
                 } else {
                     HorariosDB.solicitHorario(horario)
                     Toast.makeText(context, "Solicitação de agendamento enviada para os organizadores", Toast.LENGTH_SHORT).show()

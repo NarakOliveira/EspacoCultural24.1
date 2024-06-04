@@ -305,6 +305,10 @@ public class CalendarView extends View {
         this.enabledDates.add(Utils.getDayInMillis(calendar));
     }
 
+    public void disableDate(Calendar calendar) {
+        this.enabledDates.remove(Utils.getDayInMillis(calendar));
+    }
+
     public void setOnDateSelectListener(OnDateSelectListener onDateSelectListener) {
         this.onDateSelectListener = onDateSelectListener;
     }
