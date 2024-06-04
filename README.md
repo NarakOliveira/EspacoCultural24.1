@@ -1,3 +1,15 @@
+### Informações
+  Desenv plataformas móveis 
+  
+  T197 2024.1
+  
+  Documento de [requisitos](./apresentacao.pdf)
+
+#### Participantes:
+- Fillipe Freitas 2315058
+- Kaylany Andrade 2315763
+- Rebeca Laila    2120461
+
 ### Lista do que falta
 - [x] Adicionar tela de comentarios pra cada obra
 - [x] Adicionar uma tela pra mostrar so uma obra (pra quando a pessoa passar o celular no rfid ir pra essa tela com a obra)
