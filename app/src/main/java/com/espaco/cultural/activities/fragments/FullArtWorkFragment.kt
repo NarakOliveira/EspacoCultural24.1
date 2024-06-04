@@ -48,6 +48,7 @@ class FullArtWorkFragment : Fragment() {
         binding = FragmentFullArtWorkBinding.inflate(inflater)
 
         ArtWorkDB.findArtWork(artWorkId) {
+            if (it != null) binding.layout.visibility = View.GONE
             val artWork = it ?: ArtWork("None", "None", "None", "None", "")
             binding.textView.text = artWork.title
             binding.textView6.text = artWork.autor
