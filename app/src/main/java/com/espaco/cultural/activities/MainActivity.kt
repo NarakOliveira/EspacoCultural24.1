@@ -168,12 +168,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     if (type == "application/artworkid") {
                         val value = String(record.payload)
 
-
                         val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
                         if (f is FullArtWorkFragment) return
                         val ldf = FullArtWorkFragment()
                         val args = Bundle()
                         args.putString("id", value)
+                        ldf.setArguments(args)
                         supportFragmentManager.beginTransaction()
                             .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                             .replace(R.id.fragmentContainer, ldf)
