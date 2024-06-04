@@ -2,18 +2,22 @@ package com.espaco.cultural.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
+import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
-import android.provider.SyncStateContract
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -41,7 +45,6 @@ import com.espaco.cultural.databinding.ActivityMainBinding
 import com.espaco.cultural.services.NotificationService
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.Constants
 import com.google.firebase.messaging.ktx.messaging
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var settingsPreferences: SettingsPreferences
     private var lastClickTime: Long = 0
 
+    private lateinit var nfcAdapter: NfcAdapter
+
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +62,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(binding.root)
         requestNotificationPermissions()
 
-
         setSupportActionBar(binding.materialToolbar)
         binding.navigationView.setNavigationItemSelectedListener(this)
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
         userPreferences = UserPreferences(this)
         settingsPreferences = SettingsPreferences(this)
@@ -115,29 +120,89 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             binding.navigationView.setCheckedItem(R.id.nav_home)
         }
 
-        if (intent.action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-            val rawMessages = getNfcMessage()
-            if (rawMessages != null) {
-                val value = String((rawMessages[0] as NdefMessage).records[0].payload)
-                ArtWorkDB.findArtWork(value) {
-                    if (it != null) {
-                        val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
-                        if (f is FullArtWorkFragment) return@findArtWork
-                        val ldf = FullArtWorkFragment()
-                        val args = Bundle()
-                        args.putString("id", it.id)
-                        args.putString("title", it.title)
-                        args.putString("autor", it.autor)
-                        args.putString("description", it.description)
-                        args.putString("image", it.image)
-                        ldf.setArguments(args)
+//        if (intent.action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+//            val rawMessages = getNfcMessage(intent)
+//            if (rawMessages != null) {
+//                val value = String((rawMessages[0] as NdefMessage).records[0].payload)
+//                ArtWorkDB.findArtWork(value) {
+//                    if (it != null) {
+//                        val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+//                        if (f is FullArtWorkFragment) return@findArtWork
+//                        val ldf = FullArtWorkFragment()
+//                        val args = Bundle()
+//                        args.putString("id", it.id)
+//                        args.putString("title", it.title)
+//                        args.putString("autor", it.autor)
+//                        args.putString("description", it.description)
+//                        args.putString("image", it.image)
+//                        ldf.setArguments(args)
+//
+//                        supportFragmentManager.beginTransaction()
+//                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+//                            .replace(R.id.fragmentContainer, ldf)
+//                            .commit()
+//                    } else {
+//                        Toast.makeText(this, "Obra não encontrada!", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
+//            }
+//        }
+    }
 
-                        supportFragmentManager.beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                            .replace(R.id.fragmentContainer, ldf)
-                            .commit()
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent?.action == NfcAdapter.ACTION_TAG_DISCOVERED ) {
+            val tag = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(NfcAdapter.EXTRA_TAG, Tag::class.java)
+            } else {
+                intent.getParcelableExtra(NfcAdapter.EXTRA_TAG)
+            }
+
+            val rawMessages = getNfcMessage(intent)
+            if (rawMessages != null) {
+                val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+                if (f is NfcFragment) {
+                    val record = (rawMessages[0] as NdefMessage).records[0]
+                    val type = String(record.type)
+                    if (type == "application/artworkid") {
+                        val value = String(record.payload)
+
+                        val progressBar = ProgressBar(this)
+                        progressBar.isIndeterminate = true
+
+                        val progressDialog = AlertDialog.Builder(this)
+                            .setView(progressBar)
+                            .setCancelable(false)
+                            .create()
+
+                        progressDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                        progressDialog.show()
+
+                        ArtWorkDB.findArtWork(value) {
+                            progressDialog.dismiss()
+                            if (it != null) {
+                                val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+                                if (f is FullArtWorkFragment) return@findArtWork
+                                val ldf = FullArtWorkFragment()
+                                val args = Bundle()
+                                args.putString("id", it.id)
+                                args.putString("title", it.title)
+                                args.putString("autor", it.autor)
+                                args.putString("description", it.description)
+                                args.putString("image", it.image)
+                                ldf.setArguments(args)
+
+                                supportFragmentManager.beginTransaction()
+                                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                                    .replace(R.id.fragmentContainer, ldf)
+                                    .commit()
+                            } else {
+                                Toast.makeText(this, "Obra não identificada!", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     } else {
-                        Toast.makeText(this, "Obra não encontrada!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Obra não identificada!", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -201,12 +266,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    @SuppressLint("UnspecifiedImmutableFlag")
     override fun onResume() {
         super.onResume()
         binding.navigationView.menu.findItem(R.id.nav_pending).isVisible = userPreferences.isAdmin
 
         val nfcAdapter = NfcAdapter.getDefaultAdapter(this)
         binding.navigationView.menu.findItem(R.id.nav_nfc).isVisible = nfcAdapter != null
+
+        if (nfcAdapter == null) return
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0)
+
+        val intentFilters = arrayOf<IntentFilter>(
+            IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED),
+            IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED),
+            IntentFilter(NfcAdapter.ACTION_TECH_DISCOVERED))
+
+        nfcAdapter.enableForegroundDispatch(this, pendingIntent, intentFilters, null)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        NfcAdapter.getDefaultAdapter(this)?.disableForegroundDispatch(this)
     }
 
     @Deprecated("Deprecated in Java")
@@ -271,7 +353,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .into(userImage)
     }
 
-    private fun getNfcMessage(): Array<out Parcelable>? {
+    private fun getNfcMessage(intent: Intent): Array<out Parcelable>? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES, Parcelable::class.java)
         } else {

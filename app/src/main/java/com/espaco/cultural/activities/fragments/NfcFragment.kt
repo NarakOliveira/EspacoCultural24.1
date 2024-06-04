@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
-import android.nfc.Tag
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
@@ -29,36 +28,36 @@ class NfcFragment : Fragment() {
         binding = FragmentNfcBinding.inflate(inflater)
 
         val activity = requireActivity()
-        val context = requireContext()
+        //val context = requireContext()
         intent = activity.intent
 
         val actionBar = (activity as AppCompatActivity).supportActionBar
         actionBar?.apply { title = "Detectar obra" }
 
-        if (intent.action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
-            val rawMessages = getNfcMessage()
-            if (rawMessages != null) {
-                val value = String((rawMessages[0] as NdefMessage).records[0].payload)
-                Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
+        //if (intent.action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED)) {
+        //    val rawMessages = getNfcMessage()
+        //    if (rawMessages != null) {
+        //        val value = String((rawMessages[0] as NdefMessage).records[0].payload)
+        //        Toast.makeText(context, value, Toast.LENGTH_SHORT).show()
+        //    }
+        //} else {
+        //    val nfcAdapter = NfcAdapter.getDefaultAdapter(context)
 
-            if (nfcAdapter == null) {
-                binding.imageIcon.setImageResource(R.drawable.ic_sensors_off)
-                binding.textMessage.text = "Não suporta nfc"
-            }
-        }
+        //    if (nfcAdapter == null) {
+        //        binding.imageIcon.setImageResource(R.drawable.ic_sensors_off)
+        //        binding.textMessage.text = "Não suporta nfc"
+        //    }
+        //}
 
 
         return binding.root
     }
 
-    private fun getNfcMessage(): Array<out Parcelable>? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES, Parcelable::class.java)
-        } else {
-            return intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-        }
-    }
+    //private fun getNfcMessage(): Array<out Parcelable>? {
+    //    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+    //        intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES, Parcelable::class.java)
+    //    } else {
+    //        return intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+    //    }
+    //}
 }
