@@ -168,39 +168,50 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     if (type == "application/artworkid") {
                         val value = String(record.payload)
 
-                        val progressBar = ProgressBar(this)
-                        progressBar.isIndeterminate = true
 
-                        val progressDialog = AlertDialog.Builder(this)
-                            .setView(progressBar)
-                            .setCancelable(false)
-                            .create()
+                        val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+                        if (f is FullArtWorkFragment) return
+                        val ldf = FullArtWorkFragment()
+                        val args = Bundle()
+                        args.putString("id", value)
+                        supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(R.id.fragmentContainer, ldf)
+                            .commit()
 
-                        progressDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-                        progressDialog.show()
+                        //val progressBar = ProgressBar(this)
+                        //progressBar.isIndeterminate = true
 
-                        ArtWorkDB.findArtWork(value) {
-                            progressDialog.dismiss()
-                            if (it != null) {
-                                val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
-                                if (f is FullArtWorkFragment) return@findArtWork
-                                val ldf = FullArtWorkFragment()
-                                val args = Bundle()
-                                args.putString("id", it.id)
-                                args.putString("title", it.title)
-                                args.putString("autor", it.autor)
-                                args.putString("description", it.description)
-                                args.putString("image", it.image)
-                                ldf.setArguments(args)
+                        //val progressDialog = AlertDialog.Builder(this)
+                        //    .setView(progressBar)
+                        //    .setCancelable(false)
+                        //    .create()
 
-                                supportFragmentManager.beginTransaction()
-                                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                                    .replace(R.id.fragmentContainer, ldf)
-                                    .commit()
-                            } else {
-                                Toast.makeText(this, "Obra não identificada!", Toast.LENGTH_SHORT).show()
-                            }
-                        }
+                        //progressDialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
+                        //progressDialog.show()
+
+                        //ArtWorkDB.findArtWork(value) {
+                        //    progressDialog.dismiss()
+                        //    if (it != null) {
+                        //        val f = supportFragmentManager.findFragmentById(R.id.fragmentContainer)
+                        //        if (f is FullArtWorkFragment) return@findArtWork
+                        //        val ldf = FullArtWorkFragment()
+                        //        val args = Bundle()
+                        //        args.putString("id", it.id)
+                        //        args.putString("title", it.title)
+                        //        args.putString("autor", it.autor)
+                        //        args.putString("description", it.description)
+                        //        args.putString("image", it.image)
+                        //        ldf.setArguments(args)
+
+                        //        supportFragmentManager.beginTransaction()
+                        //            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        //            .replace(R.id.fragmentContainer, ldf)
+                        //            .commit()
+                        //    } else {
+                        //        Toast.makeText(this, "Obra não identificada!", Toast.LENGTH_SHORT).show()
+                        //    }
+                        //}
                     } else {
                         Toast.makeText(this, "Obra não identificada!", Toast.LENGTH_SHORT).show()
                     }
